@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&display=swap');
+
+.title {
+    font-weight: bold;
+    font-family: 'Anonymous Pro', monospace;
+}
+
+.header {
+    font-weight: 400;
+    font-family: 'Anonymous Pro', monospace;
+}
