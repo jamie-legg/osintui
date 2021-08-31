@@ -1,8 +1,8 @@
-# Next.js + Tailwind CSS Example
+# OSINTUI - BETA
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v2.2)](https://blog.tailwindcss.com/tailwindcss-2-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+Thanks for checking out the OSINTUI public beta. This tool's purpose is to replace your OSINT toolbox with a simple, clean, and intuitive UI to make your operation tracking much simpler.
 
-It uses the new [`Just-in-Time Mode`](https://tailwindcss.com/docs/just-in-time-mode) for Tailwind CSS.
+This is an air-gapped application (No network interfaces) in order to ensure maximum privacy for your operations. Download and upload data in order to move operations between browsers.
 
 ## Preview
 

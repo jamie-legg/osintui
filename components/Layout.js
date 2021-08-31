@@ -6,16 +6,20 @@ import {
   ChatIcon,
   CogIcon,
   DocumentSearchIcon,
+  DownloadIcon,
+  EyeIcon,
   HomeIcon,
   IdentificationIcon,
   MenuAlt2Icon,
   QuestionMarkCircleIcon,
+  UploadIcon,
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline'
 import { SearchIcon } from '@heroicons/react/solid'
 import ThemeToggle from './ThemeToggle'
 import { useTheme } from 'next-themes'
+import { classNames } from '../shared/utils'
 
 const navigation = [
   { name: 'Identities', href: '#', icon: IdentificationIcon, current: true },
@@ -35,9 +39,6 @@ const tabs = [
   { name: 'Team Members', href: '#', current: false },
 ]
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function Layout({ children }) {
   const [hash, setHash] = useState('')
@@ -164,7 +165,7 @@ export default function Layout({ children }) {
       <div className="hidden md:flex md:flex-shrink-0">
         <div className="w-64 flex flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <nav className="bg-white dark:bg-black border-r border-gray-200 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
+          <nav className="bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
             <div className="flex-shrink-0 px-4 flex items-center">
               <div className="flex-shrink-0">
                   <p className="title text-3xl">
@@ -180,14 +181,14 @@ export default function Layout({ children }) {
                     href={item.href}
                     className={classNames(
                       item.current
-                        ? 'bg-gray-50 border-gray-600 text-gray-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
-                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium header'
+                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
+                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium'
                     )}
                   >
                     <item.icon
                       className={classNames(
-                        item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
                         'mr-3 flex-shrink-0 h-6 w-6'
                       )}
                       aria-hidden="true"
@@ -207,66 +208,30 @@ export default function Layout({ children }) {
 
       {/* Content area */}
       <div className="flex-1 flex flex-col">
-        <div className="w-full items-center text-3xl py-5 title ml-5 uppercase">
-          {navigation[0].name} | 
-          <span className="header text-xl">{target.username}</span>
-          <span className="items-center bg-black dark:bg-white text-white dark:text-black text-xl px-2 ml-2">+34</span>
-        </div>
-        <div className="w-full max-w-4xl mx-auto md:px-8 xl:px-0">
-          
-          <div className="relative z-10 flex-shrink-0 h-16 bg-white dark:bg-black border-b border-gray-200 flex">
-            <button
+        
+        <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
+        <button
               type="button"
-              className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden"
+              className="border-r mr-4 border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
-              <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
+              <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
             </button>
-            <div className="flex-1 flex justify-between px-4 md:px-0">
-              <div className="flex-1 flex">
-                <form className="w-full flex md:ml-0" action="#" method="GET">
-                  <label htmlFor="mobile-search-field" className="sr-only">
-                    Search
-                  </label>
-                  <label htmlFor="desktop-search-field" className="sr-only">
-                    Search
-                  </label>
-                  <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                      <SearchIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <input
-                      name="mobile-search-field"
-                      onChange={(e) => setHash(e.target.value)}
-                      id="mobile-search-field"
-                      className="h-full w-full border-transparent py-2 pl-8 pr-3 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent focus:placeholder-gray-400 sm:hidden"
-                      placeholder="Search"
-                      type="search"
-                    />
-                    <input
-                      name="desktop-search-field"
-                      onChange={(e) => setHash(e.target.value)}
-                      id="desktop-search-field"
-                      className="hidden h-full w-full border-transparent py-2 pl-8 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent focus:placeholder-gray-400 sm:block"
-                      placeholder="Search identities, resources, and operations."
-                      type="search"
-                    />
-                  </div>
-                </form>
-              </div>
-              <div className="ml-4 flex items-center md:ml-6">
-                <button
-                  type="button"
-                  className="bg-white rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                >
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  <span className="sr-only">View notifications</span>
-                </button>
-              </div>
-            </div>
+          {navigation[0].name} |&nbsp;
+          <span className="header text-xl">{target.username}</span>
+          <span className="items-center h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2">+34</span>
+          <div className="relative ml-10 lg:hidden">
+            <EyeIcon className="right-0 h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2" aria-hidden="true" />
           </div>
+
+          <div className="hidden lg:flex absolute right-10 place-self-end items-end text-3xl title uppercase">Current_Op
+          <UploadIcon className="h-8 bg-black dark:bg-white text-white dark:text-black text-xl px-2 ml-2" />
+          <DownloadIcon className="h-8 bg-black dark:bg-white text-white dark:text-black text-xl px-2 ml-2" />
+          </div>
+
         </div>
+
         {children}
         <footer className="flex items-center justify-center w-full h-24 border-t">
         <div className="w-full h-8 dark:bg-gray-900 text-gray-200">

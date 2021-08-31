@@ -7,7 +7,6 @@ function classNames(...classes) {
 
 export default function ThemeToggle({ callback }) {
     const [darkActive, setDarkActive] = useState(false);
-    console.log(darkActive);
 
     const toggleTheme = () => {
         setDarkActive(!darkActive);
