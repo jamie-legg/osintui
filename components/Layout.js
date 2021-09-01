@@ -1,6 +1,8 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Switch, Transition } from '@headlessui/react'
 import {
+  ArrowNarrowLeftIcon,
+  ArrowNarrowRightIcon,
   BellIcon,
   BriefcaseIcon,
   ChatIcon,
@@ -18,13 +20,15 @@ import {
 } from '@heroicons/react/outline'
 import { SearchIcon } from '@heroicons/react/solid'
 import ThemeToggle from './ThemeToggle'
+import Link from 'next/link'
 import { useTheme } from 'next-themes'
 import { classNames } from '../shared/utils'
+import useSurface from '../hooks/useSurface'
 
 const navigation = [
-  { name: 'Identities', href: '#', icon: IdentificationIcon, current: true },
-  { name: 'Resources', href: '#', icon: BriefcaseIcon, current: false },
-  { name: 'Operations', href: '#', icon: DocumentSearchIcon, current: false },
+  { name: 'Identities', href: '/', icon: IdentificationIcon, current: false },
+  { name: 'Resources', href: '/resources', icon: BriefcaseIcon, current: false },
+  { name: 'Operations', href: '/operations', icon: DocumentSearchIcon, current: false },
 ]
 const secondaryNavigation = [
   { name: 'Help', href: '#', icon: QuestionMarkCircleIcon },
@@ -40,36 +44,39 @@ const tabs = [
 ]
 
 
-export default function Layout({ children }) {
-  const [hash, setHash] = useState('')
-
-  //convert character to its alphabet index position
-  const getIndex = (char) => {
-    return (char.charCodeAt(0) - 96)
-  }
-
-  const encrypt = (text) => {
-    let encrypted = ''
-    for (let i = 0; i < text.length; i++) {
-      let temp = (getIndex(text[i]) ** 2) / 2
-      
-      encrypted += temp % 2 === 0 ? getIndex(text[i])**2/2 + " " : ((getIndex(text[i]))**2)/2-.5 + "X "
-    }
-    return encrypted
-  }
+export default function Layout({ children, footerRef, pageNo }) {
   
   
   const {theme, setTheme} = useTheme()
   const [darkMode, setDarkMode] = useState(true)
+  const [nav, setNav] = useState(navigation)
+
+  useEffect(() => {
+    //turn current off on each key of navigation
+    navigation.forEach(item => {
+      item.current = false
+    })
+    navigation[pageNo].current = true 
+    setNav(navigation)
+  })
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
     setDarkMode(theme === 'dark')
   }
-  const [target, setTarget] = useState({username:"@jamie_legg"})
+  const { getCurrentTarget } = useSurface();
+  const [target, setTarget] = useState(getCurrentTarget())
+  useEffect(() => {
+    const handleTargetChange = () => {
+      setTarget(getCurrentTarget())
+    }
+    window.addEventListener('popstate', handleTargetChange)
+    return () => {
+      window.removeEventListener('popstate', handleTargetChange)
+    }
+  }, [])
+
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState(true)
-  const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] = useState(false)
 
   return (
     <div className="relative h-screen overflow-hidden flex">
@@ -124,7 +131,6 @@ export default function Layout({ children }) {
                   <div className="space-y-1">
                     {navigation.map((item) => (
                       <a
-                        key={item.name}
                         href={item.href}
                         className={classNames(
                           item.current
@@ -176,9 +182,9 @@ export default function Layout({ children }) {
             <div className="flex-grow mt-5 flex flex-col">
               <div className="flex-1 space-y-1">
                 {navigation.map((item) => (
+                  <Link href={item.href} key={item.name}>
                   <a
                     key={item.name}
-                    href={item.href}
                     className={classNames(
                       item.current
                         ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
@@ -195,6 +201,7 @@ export default function Layout({ children }) {
                     />
                     {item.name}
                   </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -220,7 +227,7 @@ export default function Layout({ children }) {
             </button>
           {navigation[0].name} |&nbsp;
           <span className="header text-xl">{target.username}</span>
-          <span className="items-center h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2">+34</span>
+          <span className="items-center h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2">+{target.vectors}</span>
           <div className="relative ml-10 lg:hidden">
             <EyeIcon className="right-0 h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2" aria-hidden="true" />
           </div>
@@ -233,9 +240,11 @@ export default function Layout({ children }) {
         </div>
 
         {children}
-        <footer className="flex items-center justify-center w-full h-24 border-t">
-        <div className="w-full h-8 dark:bg-gray-900 text-gray-200">
-          Move fast. Use commands. <code>!help</code> for more.
+        <footer className="flex items-center justify-center w-full h-16 border-t">
+        <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
+          <input ref={footerRef} className="w-full h-6 bg-gray-200 dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
+          <ArrowNarrowRightIcon className="inline-block h-5 w-5 mr-5" />
+          
         </div>
       </footer>
       </div>

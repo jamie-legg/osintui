@@ -1,9 +1,10 @@
 import { Switch } from "@headlessui/react"
-import { DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon } from "@heroicons/react/outline"
+import { DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon } from "@heroicons/react/outline"
 import { useEffect, useState } from "react"
 import useSurface from "../hooks/useSurface"
 import { DocumentRemoveIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
 import { classNames } from "../shared/utils"
+import ModalDialog from "./ModalDialog"
 
 const currentFile = {
     name: 'IMG_4985.HEIC',
@@ -33,12 +34,16 @@ const currentFile = {
     ],
   }
 
-export default function CurrentTarget({ operation }) {
+export default function CurrentTarget({ operation, onChange }) {
+    const [lowHangingDialogOpen, setLowHangingDialogOpen] = useState(false)
     const [photoEnabled, setPhotoEnabled] = useState(true)
     const [inOps, setInOps] = useState(false)
     const [infoEnabled, setInfoEnabled] = useState(true)
 
-
+    const [fruit, setFruit] = useState(operation.availableSurfaces);
+    useEffect(() => {
+        setFruit(operation.availableSurfaces)
+    }, [operation])
     return(
                     <div className="pb-16 space-y-6">
               <div>
@@ -48,14 +53,14 @@ export default function CurrentTarget({ operation }) {
                     onChange={setPhotoEnabled}
                     className={classNames(
                         photoEnabled ? 'bg-gray-900 dark:bg-white' : 'bg-gray-200 dark:bg-gray-800',
-                    'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:ring-white'
+                    'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-none cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:ring-white'
                     )}
                 >
                     <span
                     aria-hidden="true"
                     className={classNames(
                         photoEnabled ? 'translate-x-5' : 'translate-x-0',
-                        'pointer-events-none inline-block h-5 w-5 rounded-full bg-white dark:bg-black shadow transform transition ease-in-out duration-200'
+                        'pointer-events-none inline-block h-5 w-5 rounded-none bg-white dark:bg-black shadow transform transition ease-in-out duration-200'
                     )}
                     />
                 </Switch>
@@ -67,14 +72,14 @@ export default function CurrentTarget({ operation }) {
                     onChange={setInfoEnabled}
                     className={classNames(
                         infoEnabled ? 'bg-gray-900' : 'bg-gray-200',
-                    'ml-5 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:ring-white'
+                    'ml-5 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-none cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:ring-white'
                     )}
                 >
                     <span
                     aria-hidden="true"
                     className={classNames(
                         infoEnabled ? 'translate-x-5' : 'translate-x-0',
-                        'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+                        'pointer-events-none inline-block h-5 w-5 rounded-none bg-white shadow transform ring-0 transition ease-in-out duration-200'
                     )}
                     />
                 </Switch>
@@ -119,32 +124,30 @@ export default function CurrentTarget({ operation }) {
                 </div>
               </div>
               <div>
-                <h3 className="text-lg text-gray-900">Low Hanging Fruit <QuestionMarkCircleIcon onClick={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500"></QuestionMarkCircleIcon></h3>
-                <dl className="mt-2 border-t border-b border-gray-200 divide-y divide-gray-200">
-                  {operation.availableSurfaces.map((key, i) => {
-                      console.log(operation.availableSurfaces[i])
+                <h3 className="text-xl header uppercase text-gray-900">Low Hanging Fruit <RefreshIcon onClick={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500"/></h3>
+                <ModalDialog open={lowHangingDialogOpen} onClose={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} />
+                <dl className="mt-2 border-t border-b border-gray-200">
+                  {fruit.map((surface, i) => {
                       return(
-                    <div key={key} className="py-3 flex justify-between text-sm font-medium">
-                      <dt className="text-gray-500">{key}</dt>
-                      <dd className="text-gray-900"></dd>
+                    <div key={surface.key} className="cursor-pointer group uppercase p-1.5 m-1 title inline-block bg-black text-white text-sm font-medium">
+                      <dt className="">{infoEnabled? surface.key : "####"+(Math.floor(Math.random()*2) == 1 ? "##" : "#")} <span className="p-1 px-2 first-line:w-3 h-3 rounded-full bg-white text-red-600 group-hover:text-red-800">{surface.priority}</span></dt>
+                      
                     </div>
                       )
 })}     
                 </dl>
               </div>
-              <div>
-                <h3 className="font-medium text-gray-900">Description</h3>
-                <div className="mt-2 flex items-center justify-between">
-                  <p className="text-sm text-gray-500 italic">Add a description to this image.</p>
-                  <button
-                    type="button"
-                    className="bg-white rounded-full h-8 w-8 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                    <PencilAltIcon className="h-5 w-5" aria-hidden="true" />
-                    <span className="sr-only">Add description</span>
-                  </button>
-                </div>
-              </div>
+              <h3 className="text-xl header uppercase text-gray-900">DOCUMENTED VECTORS <RefreshIcon onClick={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500"/></h3>
+                <dl className="mt-2 border-t border-b border-gray-200">
+                  {fruit.map((surface, i) => {
+                      return(
+                    <div key={surface.key} className="cursor-pointer group uppercase p-1.5 m-1 title inline-block bg-black text-white text-sm font-medium">
+                      <dt className="">{infoEnabled? surface.key : "####"+(Math.floor(Math.random()*2) == 1 ? "##" : "#")} <span className="p-1 px-2 first-line:w-3 h-3 rounded-full bg-white text-red-600 group-hover:text-red-800">{surface.priority}</span></dt>
+                      
+                    </div>
+                      )
+})}     
+                </dl>
               <div>
                 <h3 className="font-medium text-gray-900">Shared with</h3>
                 <ul role="list" className="mt-2 border-t border-b border-gray-200 divide-y divide-gray-200">

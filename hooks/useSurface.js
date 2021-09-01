@@ -1,14 +1,17 @@
 import { AtSymbolIcon, GlobeAltIcon, InboxIcon, InboxInIcon, PhotographIcon, ShoppingBagIcon } from "@heroicons/react/outline";
 
-const currentTarget = {
+const defaultTarget = {
     name: 'jamie legg',
     username: '@jamie_legg_',
-    profilePicUrl: 'https://pbs.twimg.com/profile_images/1314596328199127040/gI4PBZe2.jpg',
+    profilePicUrl: "https://pbs.twimg.com/profile_images/1314596328199127040/gI4PBZe2.jpg",
     identities: [],
     availableSurfaces: [],
+    vectors: 0,
 }
 
 const useSurface = () => {
+
+    let currentTarget = defaultTarget;
 
     const getIdentityProviders = () => {
         return [
@@ -23,6 +26,7 @@ const useSurface = () => {
             { name: 'Pinterest', surfaceKey: [], iconPath: "M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z" },
             { name: 'Skype', surfaceKey: [], iconPath: "M12.069 18.874c-4.023 0-5.82-1.979-5.82-3.464 0-.765.561-1.296 1.333-1.296 1.723 0 1.273 2.477 4.487 2.477 1.641 0 2.55-.895 2.55-1.811 0-.551-.269-1.16-1.354-1.429l-3.576-.895c-2.88-.724-3.403-2.286-3.403-3.751 0-3.047 2.861-4.191 5.549-4.191 2.471 0 5.393 1.373 5.393 3.199 0 .784-.688 1.24-1.453 1.24-1.469 0-1.198-2.037-4.164-2.037-1.469 0-2.292.664-2.292 1.617s1.153 1.258 2.157 1.487l2.637.587c2.891.649 3.624 2.346 3.624 3.944 0 2.476-1.902 4.324-5.722 4.324m11.084-4.882l-.029.135-.044-.24c.015.045.044.074.059.12.12-.675.181-1.363.181-2.052 0-1.529-.301-3.012-.898-4.42-.569-1.348-1.395-2.562-2.427-3.596-1.049-1.033-2.247-1.856-3.595-2.426-1.318-.631-2.801-.93-4.328-.93-.72 0-1.444.07-2.143.204l.119.06-.239-.033.119-.025C8.91.274 7.829 0 6.731 0c-1.789 0-3.47.698-4.736 1.967C.729 3.235.032 4.923.032 6.716c0 1.143.292 2.265.844 3.258l.02-.124.041.239-.06-.115c-.114.645-.172 1.299-.172 1.955 0 1.53.3 3.017.884 4.416.568 1.362 1.378 2.576 2.427 3.609 1.034 1.05 2.247 1.857 3.595 2.442 1.394.6 2.877.898 4.404.898.659 0 1.334-.06 1.977-.179l-.119-.062.24.046-.135.03c1.002.569 2.126.871 3.294.871 1.783 0 3.459-.69 4.733-1.963 1.259-1.259 1.962-2.951 1.962-4.749 0-1.138-.299-2.262-.853-3.266" }]
     };
+    
 
     const getOtherSurfaces = () => {
         return [{ name: 'Web', surfaceKey: [], icon:GlobeAltIcon },
@@ -34,8 +38,7 @@ const useSurface = () => {
     };
 
     const addSurfaceToTarget = (provider) => {
-        console.log(provider);
-        console.log(currentTarget);
+        console.log("ADDING");
         //get surface from surfaceMap
         const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
         // check if surface is already on target
@@ -53,10 +56,36 @@ const useSurface = () => {
         return currentTarget
     };
 
+    const removeSurfaceFromTarget = (provider) => {
+        console.log("REMOVING");
+        // find the relevant surfaces on the target and lower their priority, if priority is 0 remove
+        const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
+        surface.forEach(s => {
+            const targetSurface = currentTarget.availableSurfaces.find(as => as.key === s);
+            if (targetSurface) {
+                targetSurface.priority -= 1;
+                if (targetSurface.priority === 0) {
+                    currentTarget.availableSurfaces.splice(currentTarget.availableSurfaces.indexOf(targetSurface), 1);
+                }
+            }
+        });
+        return currentTarget
+    };
+
     const getCurrentTarget = () => {
         return currentTarget;
     };
 
+    const getDefaultTarget = () => {
+        return defaultTarget;
+    };
+
+    const getProviderSurfaces = (provider) => {
+        const surface = surfaceMap.find(s => s.key === provider.surfaceKey)
+        return surface? surface.surface : [];
+    };
+
+    //? SURFACE MAP WITH UNIQUE KEYS
     const surfaceMap = [
             {
                 key:"dwm",
@@ -487,22 +516,280 @@ const useSurface = () => {
                 name: "Posts",
                 surface: ["tags", "images", "content", "video", "link", "location"],
             },
-
-
-
-
-
-
-            
-
+            //! FACEBOOK ATTACK SURFACE
+            {
+                key: "fb",
+                name: "Facebook",
+                surface: ["fbId", "profilePic", "username", "name", "verified", "stories", "followers", "following", "website", "biography", "thirdParty", "posts"],
+            },
+            {
+                key: "fbId",
+                name: "Facebook ID",
+                surface: [],
+            },
+            //! TIKTOK ATTACK SURFACE
+            {
+                key: "tiktok",
+                name: "TikTok",
+                surface: ["tiktokId", "profilePic", "username", "name", "verified", "likes", "followers", "following", "tiktokVideos", "biography", "thirdParty", "posts"],
+            },
+            {
+                key: "tiktokId",
+                name: "TikTok ID",
+                surface: [],
+            },
+            {
+                key:"tiktokVideos",
+                name: "TikTok Videos",
+                surface: ["tags", "likes", "music", "comments", "title"],
+            },
         ]
+        const getRawResources = () => {
+            return raw_resource_urls
+        }
+
+            const raw_resource_urls=[
+                "osint.party",
+                "grep.app/",
+                "wireless2.fcc.gov/UlsApp/UlsSearch/searchLicense.jsp",
+                "apc-cap.ic.gc.ca/pls/apc_anon/query_amat_cs$.startup",
+                "camas.github.io/reddit-search/",
+                "github.com/altilunium/wistalk",
+                "www.qrz.com/",
+                "github.com/sundowndev/PhoneInfoga",
+                "sundowndev.github.io/PhoneInfoga/install/",
+                "steamid.uk/",
+                "www.toddington.com/resources/cheat-sheets/",
+                "sundowndev.github.io/PhoneInfoga/install/",
+                "steamrep.com/",
+                "minecraft-statistic.net/en/players/",
+                "commoncrawl.org/",
+                "t.me/TgScanRobot/",
+                "github.com/GONZOsint/gitrecon",
+                "github.com/megadose/toutatis",
+                "chaos.institute/deanonymizing-hidden-services-guide/",
+                "chaos.institute/fingeprinting-tor-relays-with-jarm/",
+                "github.com/Datalux/Osintgram",
+                "github.com/Lifka/hacking-resources",
+                "anvaka.github.io/map-of-reddit/",
+                "dfw1n.github.io/DFW1N-OSINT/",
+                "jakecreps.com/osint-tool-tuesday-social-media-phone-number-youtube/",
+                "github.com/davidkowalk/twitter_geolocate",
+                "github.com/th3unkn0n/osi.ig",
+                "vividmaps.com/largest-country-world/",
+                "haveibeenzucked.com/",
+                "www.artofmanliness.com/articles/how-to-develop-the-situational-awareness-of-jason-bourne/",
+                "osint.fans/australia-osint-data-sources",
+                "osint.rest/",
+                "github.com/warifp/FacebookToolkit",
+                "en.wikipedia.org/wiki/List_of_intelligence_gathering_disciplines",
+                "mrrickdiesel10-6.medium.com/persint-a-social-engineering-spin-on-your-everyday-osint-4bfa1b9a56c1",
+                "www.uk-osint.net/motorvehicle.html",
+                "start.me/p/rxeRqr/aml-toolbox",
+                "www.youtube.com/watch?v=ljiRh-nOP1Y",
+                "nixintel.info/osint-tools/using-pgp-keys-for-osint/",
+                "start.me/p/rx6Qj8/nixintel-s-osint-resource-list",
+                "netbootcamp.org/pastesearch.html",
+                "www.zoomeye.org/",
+                "www.youtube.com/watch?v=NqzvuUXkv6c",
+                "techjournalism.medium.com/how-new-satellite-data-sources-enhance-investigative-journalism-f6f9ea71f4af",
+                "netbootcamp.org/osinttools/",
+                "sector035.nl/links",
+                "sector035.nl/articles/category:week-in-osint",
+                "www.youtube.com/watch?v=aSu7ny6dEXA",
+                "www.youtube.com/watch?v=KpnVjE8bSvQ",
+                "www.sans.org/blog/list-of-resource-links-from-open-source-intelligence-summit-2021/",
+                "www.sans.org/blog/-must-have-free-resources-for-open-source-intelligence-osint-/",
+                "domain-checker.valimail.com/dmarc/",
+                "tcxsproject.com.br/dev/Biblioteca%20Livros%20Hacker%20Gorpo%20Orko/OSINT%20101-What%20the%20Internet%20Knows.pdf",
+                "jakecreps.com/osint-tool-tuesday-email-breach-data-office-365-bangs/",
+                "platform.sensity.ai/deepfake-detection",
+                "usersearch.org/",
+                "www.inteltechniques.net/courses/open-source-intelligence",
+                "github.com/kennbroorg/iKy",
+                "twitter.com/ai6yrham/status/1382371967618097157",
+                "fas.org/irp/doddir/army/tc3-22-69.pdf",
+                "topazlabs.com/gigapixel-ai/",
+                "web.datatree.com/",
+                "nixintel.info/osint/chronolocation-clues-quiztime-11th-may-2020/",
+                "skylens.io/",
+                "www.osintcombine.com/tools",
+                "github.com/Rog3rSm1th/Profil3r",
+                "github.com/ThoughtfulDev/EagleEye",
+                "www.spydialer.com/",
+                "amifloced.org/",
+                "www.idcrawl.com/",
+                "tree-map.nycgovparks.org/",
+                "apps.london.gov.uk/street-trees/",
+                "opendata.vancouver.ca/explore/dataset/street-trees/",
+                "www.effect.group",
+                "youtube.com/watch?v=dU6KG221MaM",
+                "mcbroken.com/",
+                "labs.internetwache.org/ds_store/",
+                "pentestbook.six2dez.com/recon/public-info-gathering",
+                "start.me/p/L1rEYQ/osint4all",
+                "haveibeenpwned.com",
+                "breachchecker.com/",
+                "pwndb2am4tzkvold.onion.ws/",
+                "leakcheck.net/",
+                "leakpeek.com/",
+                "intelx.io/",
+                "joe.black/leakengine.html",
+                "github.com/pixelbubble/ProtOSINT",
+                "blockpath.com/",
+                "thedatapack.com/tools/find-github-user-email/",
+                "medium.com/the-first-digit/osint-how-to-find-information-on-anyone-5029a3c7fd56",
+                "docs.google.com/spreadsheets/d/18rtqh8EG2q1xBo2cLNyhIDuK9jrPGwYr9DI2UncoqJQ/htmlview",
+                "github.com/igorbrigadir/twitter-advanced-search",
+                "osintcombine.tools/",
+                "2lingual.com/",
+                "www.trendsmap.com/map",
+                "www.yamli.com/",
+                "transparencyreport.google.com/safe-browsing/search",
+                "justgetmydata.com/",
+                "justdeleteme.xyz/",
+                "yasiv.com/reddit",
+                "www.adl.org/education-and-resources/resource-knowledge-base/adl-heat-map",
+                "docs.google.com/spreadsheets/d/<document ID>/export?format=<file format>`",
+                "github.com/nixintel/o365chk/",
+                "i-sight.com/resources/101-osint-resources-for-investigators/",
+                "owlspace.xyz/cybersec/tg-nearby/",
+                "opaque.link/post/opsecguide/",
+                "github.com/Dutchosintguy/OSINT-Discord-resources",
+                "nixintel.info/osint-tools/using-pgp-keys-for-osint/",
+                "twitter.com/BitBangingBytes/status/1388716726783672326?s=09",
+                "github.com/dessant/search-by-image",
+                "github.com/ipinfo/cli",
+                "www.uk-osint.net/creatingids.html",
+                "search4faces.com/tt00/index.html",
+                "github.com/dessant/web-archives",
+                "www.pixsy.com/",
+                "github.com/sinwindie/OSINT",
+                "www.cqcore.uk/email-to-username/",
+                "tweeterid.com/",
+                "lumendatabase.org/",
+                "github.com/BushidoUK/CTI-Lexicon/blob/main/Lexicon.md",
+                "sector035.nl/articles/2021-17",
+                "crxcavator.io/",
+                "github.com/MobileFirstLLC/social-media-hacker-list",
+                "whitehatinspector.blogspot.com/2021/03/skype-hidden-osint-goldmine.html",
+                "whitehatinspector.blogspot.com/2021/02/using-osint-to-find-missing-persons.html",
+                "osintcurio.us/2021/05/06/investigating-discord-a-primer/",
+                "youtu.be/vJOQdWk6WMw",
+                "smihub.com/",
+                "pixwox.com/",
+                "www.militaryfactory.com/smallarms/guns-by-country.php",
+                "docs.google.com/spreadsheets/d/1JxBbMt4JvGr--G0Pkl3jP9VDTBunR2uD3_faZXDvhxc",
+                "www.bing.com/maps",
+                "www.mapchannels.com/DualMaps.aspx",
+                "mc.bbbike.org/mc/",
+                "www.freemaptools.com/",
+                "livingatlas.arcgis.com/",
+                "search.buzz.im/",
+                "www.baidu.com/",
+                "github.com/ItIsMeCall911/Awesome-Telegram-OSINT",
+                "fingerprintjs.com/blog/external-protocol-flooding/",
+                "www.theregister.com/2021/05/14/browser_fingerprinting_flaw/",
+                "schemeflood.com/",
+                "anonymousplanet.org/guide.html",
+                "mattw.io/youtube-geofind/location",
+                "soar.earth/",
+                "github.com/edgi-govdata-archiving/awesome-website-change-monitoring",
+                "docs.google.com/document/d/14li22wAG2Wh2y0UhgBjbqEvZJCDsNZY8vpUAJ_jJ5X8/",
+                "safing.io/portmaster/",
+                "ssd.eff.org/",
+                "github.com/megadose/toutatis",
+                "github.com/Datalux/Osintgram",
+                "github.com/th3unkn0n/osi.ig",
+                "www.aware-online.com/osint-tools/instagram-tools/",
+                "www.youtube.com/watch?v=15xj70IpOTw",
+                "www.youtube.com/watch?v=9kPPlkAo3ZM",
+                "brackets.substack.com/p/7-life-lessons-from-25-years-in-counterterrorism",
+                "www.cqcore.uk/are-you-linked-in/",
+                "www.aware-online.com/finding-witnesses-via-strava/",
+                "osint.sh/",
+                "userhunt.co/",
+                "www.ghostcodes.com/",
+                "youtu.be/XaHWcttD0tM",
+                "www.blockint.nl/the-osint-library/",
+                "osintcurio.us/2019/07/16/searching-instagram/",
+                "www.instagram.com/username/?__a=1",
+                "i.instagram.com/api/v1/users/lookup/id/info",
+                "www.aware-online.com/find-an-instagram-user-id/",
+                "blog.tradint.io/trade-intelligence-tradint-what-is-it-and-why-is-it-important-cd1b34534283",
+                "tradint.io/",
+                "www.gosecure.net/blog/2021/05/27/step-by-step-how-to-deanonymize-emails-on-linkedin/",
+                "www.youtube.com/watch?v=-JjAZF2-Tno",
+                "one-plus.github.io/",
+                "youtu.be/Fpsr3oWEP8M",
+                "youtu.be/L-TOQeHfwBs",
+                "twitter.com/henkvaness/status/1399291128244015104",
+                "intelx.io/tools",
+                "phonebook.cz/",
+                "www.bellingcat.com/news/2021/05/28/us-soldiers-expose-nuclear-weapons-secrets-via-flashcard-apps/",
+                "tompatrickjarvis.medium.com/useful-google-sheets-functions-for-osint-research-71337f1b5407",
+                "vrn.aaronsplace.co.uk",
+                "github.com/Ph055a/OSINT_Collection",
+                "om.1881.no/nyttige-sider/kataloger-i-utlandet",
+                "cheatsheet.haax.fr/open-source-intelligence-osint/platforms-hunting/linkedin/",
+                "www.aware-online.com/find-the-email-address-of-a-linkedin-user/",
+                "osint.party/api/rss/fresh",
+                "github.com/s0md3v/Zen",
+                "userhunt.co/",
+                "29a.ch/sandbox/2012/imageerrorlevelanalysis/",
+                "fotoforensics.com/",
+                "www.omnisci.com/demos/tweetmap",
+                "parseek.com/",
+                "ahmia.fi/",
+                "darksearch.io/",
+                "search.goo.ne.jp/",
+                "www.exploit-db.com/google-hacking-database",
+                "www.osintcombine.com/tiktok-quick-search",
+                "youtu.be/aVwl892hqb4",
+                "platform.sensity.ai/deepfake-detection",
+                "twitter.com/IntelTechniques/status/1403384373928292362?s=20",
+                "clubhousedb.com/",
+                "www.safetydetectives.com/amp/blog/what-is-shodan-and-how-to-use-it-most-effectively/",
+                "www.redditinvestigator.com/",
+                "twitter.com/Geluchat/status/1405081455483568136",
+                "github.com/netkas-zz/KikToolset",
+                "archived.moe/",
+                "4chansearch.com/",
+                "search4chan.org/",
+                "4chanarchives.com/",
+                "thebarchive.com/",
+                "4plebs.org/",
+                "archiveofsins.com/",
+                "desuarchive.org/",
+                "archive.wakarimasen.moe/",
+                "randomarchive.com/",
+                "archive.nyafuu.org/",
+                "boards.fireden.net/",
+                "warosu.org/",
+                "www.darktracer.com/",
+                "metaosint.github.io/",
+                "github.com/fastfire/deepdarkCTI",
+                "themarkup.org/blacklight",
+                "phonebook.cz/",
+                "jakecreps.com/osint-workflow-wednesday-extracting-telegram-photos/",
+                "openinframap.org/",
+                "youtube.com/watch?v=j0Rm3JDszVo",
+                "start.me/p/QRqE7r/osint",
+                "deepware.ai/",
+                "github.com/datamllab/awesome-deepfakes-materials",
+                "start.me/p/QRqE7r/osint"
+            ]
 
     return {
         getIdentityProviders,
         getOtherSurfaces,
         addSurfaceToTarget,
+        getDefaultTarget,
         getCurrentTarget,
-        currentTarget
+        defaultTarget,
+        removeSurfaceFromTarget,
+        getProviderSurfaces,
+        getRawResources
     };
 };
 

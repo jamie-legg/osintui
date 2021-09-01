@@ -1,7 +1,7 @@
 import { ArrowCircleRightIcon, LightningBoltIcon, PlusSmIcon } from '@heroicons/react/solid'
 import Head from 'next/head'
 import Layout from '../components/Layout'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
   CogIcon,
@@ -36,12 +36,26 @@ function classNames(...classes) {
 
 export default function Home() {
   const category="Home"
+  const footerRef = useRef();
   const [ theme, setTheme ] = useState('yellow');
-  const { getIdentityProviders, getOtherSurfaces, getCurrentTarget, addSurfaceToTarget } = useSurface();
-  const [currentOperation, setCurrentOperation] = useState(getCurrentTarget());
-  const addProviderToOperation = (provider) => {
+  const { getIdentityProviders, getCurrentTarget, getOtherSurfaces, getDefaultTarget, addSurfaceToTarget, removeSurfaceFromTarget } = useSurface();
+  const [currentOperation, setCurrentOperation] = useState(getDefaultTarget());
+  const addProviderToOperation = (provider, add=true) => {
+    if(!add) {
+      console.log("messing with state");
+      setCurrentOperation(removeSurfaceFromTarget(provider))
+    } else {
+    console.log("messing with state");
     setCurrentOperation(addSurfaceToTarget(provider))
+    console.log(currentOperation);
+    }
   }
+
+  useEffect(() => {
+    console.log("useEffect");
+    console.log(currentOperation);
+  })
+
   return (
     <div>
       <Head>
@@ -50,7 +64,7 @@ export default function Home() {
       </Head>
 
       <div>
-        <Layout>
+        <Layout pageNo={0} footerRef={footerRef}>
 
       {/* Content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -64,7 +78,7 @@ export default function Home() {
               {/* Gallery */}
               <section className="pb-16" aria-labelledby="identification-gallery">
                 <p className="mb-5 text-gray-500 dark:text-gray-300">
-                  <LightningBoltIcon onClick={() => setTheme('blue')}className={`inline-block h-8 w-8 mr-5 text-${theme}-400`} />
+                  <LightningBoltIcon onClick={() => setTheme('blue')}className={`inline-block h-5 w-5 mb-1 mr-5 text-${theme}-400`} />
                   Configure your initial identification vectors here in order to calculate and populate your attack surface.</p>
                 <ul
                   role="list"
@@ -77,26 +91,7 @@ export default function Home() {
                 <span className="header text-xl uppercase">Other Implicit Providers</span>
                   </div>
                     {getOtherSurfaces().map((provider) => (
-                    <li key={provider.name} className="relative">
-                      <div
-                        className={classNames(
-                          provider.name
-                            ? 'ring-2 ring-offset-2 ring-gray-500'
-                            : 'focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-gray-500',
-                          'group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden'
-                        )}
-                      >
-                        <provider.icon className="h-10 mx-auto my-auto w-10" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        </provider.icon>
-                        <button type="button" className="absolute inset-0 focus:outline-none">
-                          <span className="sr-only">View details for {provider.name}</span>
-                        </button>
-                      </div>
-                      <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                        {provider.name}
-                      </p>
-                      <p className="block text-sm font-medium text-gray-500 pointer-events-none">{provider.name.length}</p>
-                    </li>
+                      <ProviderNode handler={addProviderToOperation} provider={provider} icon={provider.icon} />
                   ))}
                 </ul>
               </section>
