@@ -85,7 +85,25 @@ const useSurface = () => {
         return surface? surface.surface : [];
     };
 
+    function parseUrl(url) {
+        var parsed = {};
+        parsed.protocol = url.split(':')[0];
+        parsed.host = url.split('/')[2];
+        parsed.path = url.split('/')[3];
+        parsed.query = url.split('?')[1];
+        parsed.fragment = url.split('#')[1];
+        return parsed;
+      }
+    
+    const getRawResources = () => {
+        return raw_resource_urls
+    }
+
+    //! ITS ALL DATA FROM HERE ON OUT
+
     //? SURFACE MAP WITH UNIQUE KEYS
+    //? RESOURCES WITH TAGS
+    
     const surfaceMap = [
             {
                 key:"dwm",
@@ -545,250 +563,1354 @@ const useSurface = () => {
             },
         ]
 
-        function parseUrl(url) {
-            var parsed = {};
-            parsed.protocol = url.split(':')[0];
-            parsed.host = url.split('/')[2];
-            parsed.path = url.split('/')[3];
-            parsed.query = url.split('?')[1];
-            parsed.fragment = url.split('#')[1];
-            return parsed;
-          }
-        
-        const getRawResources = () => {
-            return raw_resource_urls
-        }
+        const raw_resources = [
+            {
+                "title": "",
+                "description": "",
+                "tags": ["image", "analysis"],
+                "url": "29a.ch/sandbox/2012/imageerrorlevelanalysis/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["language", "search"],
+                "url": "2lingual.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["4chan", "archive"],
+                "url": "4chanarchives.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["4chan", "search"],
+                "url": "4chansearch.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["4chan", "archive"],
+                "url": "4plebs.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["darkweb", "search"],
+                "url": "ahmia.fi/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["privacy", "check"],
+                "url": "amifloced.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["privacy", "guide"],
+                "url": "anonymousplanet.org/guide.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["reddit", "map"],
+                "url": "anvaka.github.io/map-of-reddit/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["canada", "search"],
+                "url": "apc-cap.ic.gc.ca/pls/apc_anon/query_amat_cs$.startup"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["london", "map", "uk"],
+                "url": "apps.london.gov.uk/street-trees/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["boards", "archive"],
+                "url": "archive.nyafuu.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["boards", "archive"],
+                "url": "archived.moe/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["boards", "archive"],
+                "url": "archiveofsins.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["bitcoin", "search"],
+                "url": "blockpath.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["intel", "guide"],
+                "url": "blog.tradint.io/trade-intelligence-tradint-what-is-it-and-why-is-it-important-cd1b34534283"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["security", "guide"],
+                "url": "brackets.substack.com/p/7-life-lessons-from-25-years-in-counterterrorism"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["breach", "check", "search"],
+                "url": "breachchecker.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["reddit", "search"],
+                "url": "camas.github.io/reddit-search/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["linkedin", "cheatsheet", "intel"],
+                "url": "cheatsheet.haax.fr/open-source-intelligence-osint/platforms-hunting/linkedin/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["clubhouse", "search"],
+                "url": "clubhousedb.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["data", "crawl", "scrape"],
+                "url": "commoncrawl.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["extension", "search"],
+                "url": "crxcavator.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": ["darkweb", "search"],
+                "url": "darksearch.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "deepware.ai/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "desuarchive.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "dfw1n.github.io/DFW1N-OSINT/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "docs.google.com/document/d/14li22wAG2Wh2y0UhgBjbqEvZJCDsNZY8vpUAJ_jJ5X8/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "docs.google.com/spreadsheets/d/18rtqh8EG2q1xBo2cLNyhIDuK9jrPGwYr9DI2UncoqJQ/htmlview"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "docs.google.com/spreadsheets/d/1JxBbMt4JvGr--G0Pkl3jP9VDTBunR2uD3_faZXDvhxc"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "docs.google.com/spreadsheets/d/<document ID>/export?format=<file format>`"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "domain-checker.valimail.com/dmarc/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "en.wikipedia.org/wiki/List_of_intelligence_gathering_disciplines"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "fas.org/irp/doddir/army/tc3-22-69.pdf"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "fingerprintjs.com/blog/external-protocol-flooding/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "fotoforensics.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/BushidoUK/CTI-Lexicon/blob/main/Lexicon.md"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/Datalux/Osintgram"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/Datalux/Osintgram"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/Dutchosintguy/OSINT-Discord-resources"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/GONZOsint/gitrecon"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/ItIsMeCall911/Awesome-Telegram-OSINT"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/Lifka/hacking-resources"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/MobileFirstLLC/social-media-hacker-list"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/Ph055a/OSINT_Collection"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/Rog3rSm1th/Profil3r"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/ThoughtfulDev/EagleEye"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/altilunium/wistalk"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/datamllab/awesome-deepfakes-materials"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/davidkowalk/twitter_geolocate"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/dessant/search-by-image"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/dessant/web-archives"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/edgi-govdata-archiving/awesome-website-change-monitoring"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/fastfire/deepdarkCTI"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/igorbrigadir/twitter-advanced-search"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/ipinfo/cli"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/kennbroorg/iKy"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/megadose/toutatis"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/megadose/toutatis"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/netkas-zz/KikToolset"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/nixintel/o365chk/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/pixelbubble/ProtOSINT"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/s0md3v/Zen"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/sinwindie/OSINT"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/sundowndev/PhoneInfoga"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/th3unkn0n/osi.ig"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/th3unkn0n/osi.ig"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "github.com/warifp/FacebookToolkit"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "grep.app/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "haveibeenpwned.com"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "haveibeenzucked.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "i-sight.com/resources/101-osint-resources-for-investigators/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "i.instagram.com/api/v1/users/lookup/id/info"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "intelx.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "intelx.io/tools"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "jakecreps.com/osint-tool-tuesday-email-breach-data-office-365-bangs/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "jakecreps.com/osint-tool-tuesday-social-media-phone-number-youtube/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "jakecreps.com/osint-workflow-wednesday-extracting-telegram-photos/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "joe.black/leakengine.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "justdeleteme.xyz/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "justgetmydata.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "labs.internetwache.org/ds_store/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "leakcheck.net/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "leakpeek.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "livingatlas.arcgis.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "lumendatabase.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "mattw.io/youtube-geofind/location"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "mc.bbbike.org/mc/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "mcbroken.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "medium.com/the-first-digit/osint-how-to-find-information-on-anyone-5029a3c7fd56"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "metaosint.github.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "minecraft-statistic.net/en/players/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "mrrickdiesel10-6.medium.com/persint-a-social-engineering-spin-on-your-everyday-osint-4bfa1b9a56c1"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "netbootcamp.org/osinttools/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "netbootcamp.org/pastesearch.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "nixintel.info/osint-tools/using-pgp-keys-for-osint/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "nixintel.info/osint-tools/using-pgp-keys-for-osint/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "nixintel.info/osint/chronolocation-clues-quiztime-11th-may-2020/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "om.1881.no/nyttige-sider/kataloger-i-utlandet"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "one-plus.github.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "opaque.link/post/opsecguide/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "opendata.vancouver.ca/explore/dataset/street-trees/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "openinframap.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osint.fans/australia-osint-data-sources"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osint.party"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osint.party/api/rss/fresh"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osint.rest/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osint.sh/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osintcombine.tools/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osintcurio.us/2019/07/16/searching-instagram/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "osintcurio.us/2021/05/06/investigating-discord-a-primer/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "owlspace.xyz/cybersec/tg-nearby/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "parseek.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "pentestbook.six2dez.com/recon/public-info-gathering"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "phonebook.cz/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "phonebook.cz/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "pixwox.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "platform.sensity.ai/deepfake-detection"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "platform.sensity.ai/deepfake-detection"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "pwndb2am4tzkvold.onion.ws/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "randomarchive.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "safing.io/portmaster/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "schemeflood.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "search.buzz.im/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "search.goo.ne.jp/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "search4chan.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "search4faces.com/tt00/index.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "sector035.nl/articles/2021-17"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "sector035.nl/articles/category:week-in-osint"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "sector035.nl/links"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "skylens.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "smihub.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "soar.earth/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "ssd.eff.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "start.me/p/L1rEYQ/osint4all"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "start.me/p/QRqE7r/osint"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "start.me/p/rx6Qj8/nixintel-s-osint-resource-list"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "start.me/p/rxeRqr/aml-toolbox"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "steamid.uk/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "steamrep.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "sundowndev.github.io/PhoneInfoga/install/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "sundowndev.github.io/PhoneInfoga/install/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "t.me/TgScanRobot/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "tcxsproject.com.br/dev/Biblioteca%20Livros%20Hacker%20Gorpo%20Orko/OSINT%20101-What%20the%20Internet%20Knows.pdf"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "techjournalism.medium.com/how-new-satellite-data-sources-enhance-investigative-journalism-f6f9ea71f4af"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "thebarchive.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "thedatapack.com/tools/find-github-user-email/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "themarkup.org/blacklight"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "tompatrickjarvis.medium.com/useful-google-sheets-functions-for-osint-research-71337f1b5407"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "topazlabs.com/gigapixel-ai/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "tradint.io/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "transparencyreport.google.com/safe-browsing/search"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "tree-map.nycgovparks.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "tweeterid.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "twitter.com/BitBangingBytes/status/1388716726783672326?s=09"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "twitter.com/Geluchat/status/1405081455483568136"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "twitter.com/IntelTechniques/status/1403384373928292362?s=20"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "twitter.com/ai6yrham/status/1382371967618097157"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "twitter.com/henkvaness/status/1399291128244015104"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "userhunt.co/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "userhunt.co/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "usersearch.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "vividmaps.com/largest-country-world/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "vrn.aaronsplace.co.uk"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "warosu.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "web.datatree.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "whitehatinspector.blogspot.com/2021/02/using-osint-to-find-missing-persons.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "whitehatinspector.blogspot.com/2021/03/skype-hidden-osint-goldmine.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "wireless2.fcc.gov/UlsApp/UlsSearch/searchLicense.jsp"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.adl.org/education-and-resources/resource-knowledge-base/adl-heat-map"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.artofmanliness.com/articles/how-to-develop-the-situational-awareness-of-jason-bourne/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.aware-online.com/find-an-instagram-user-id/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.aware-online.com/find-the-email-address-of-a-linkedin-user/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.aware-online.com/finding-witnesses-via-strava/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.aware-online.com/osint-tools/instagram-tools/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.baidu.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.bellingcat.com/news/2021/05/28/us-soldiers-expose-nuclear-weapons-secrets-via-flashcard-apps/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.bing.com/maps"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.blockint.nl/the-osint-library/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.cqcore.uk/are-you-linked-in/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.cqcore.uk/email-to-username/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.darktracer.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.effect.group"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.exploit-db.com/google-hacking-database"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.freemaptools.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.ghostcodes.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.gosecure.net/blog/2021/05/27/step-by-step-how-to-deanonymize-emails-on-linkedin/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.idcrawl.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.instagram.com/username/?__a=1"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.inteltechniques.net/courses/open-source-intelligence"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.mapchannels.com/DualMaps.aspx"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.militaryfactory.com/smallarms/guns-by-country.php"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.omnisci.com/demos/tweetmap"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.osintcombine.com/tiktok-quick-search"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.osintcombine.com/tools"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.pixsy.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.qrz.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.redditinvestigator.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.safetydetectives.com/amp/blog/what-is-shodan-and-how-to-use-it-most-effectively/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.sans.org/blog/-must-have-free-resources-for-open-source-intelligence-osint-/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.sans.org/blog/list-of-resource-links-from-open-source-intelligence-summit-2021/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.spydialer.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.theregister.com/2021/05/14/browser_fingerprinting_flaw/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.toddington.com/resources/cheat-sheets/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.trendsmap.com/map"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.uk-osint.net/creatingids.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.uk-osint.net/motorvehicle.html"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.yamli.com/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=-JjAZF2-Tno"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=15xj70IpOTw"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=9kPPlkAo3ZM"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=KpnVjE8bSvQ"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=NqzvuUXkv6c"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=aSu7ny6dEXA"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.youtube.com/watch?v=ljiRh-nOP1Y"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "www.zoomeye.org/"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "yasiv.com/reddit"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtu.be/Fpsr3oWEP8M"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtu.be/L-TOQeHfwBs"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtu.be/XaHWcttD0tM"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtu.be/aVwl892hqb4"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtu.be/vJOQdWk6WMw"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtube.com/watch?v=dU6KG221MaM"
+            },
+            {
+                "title": "",
+                "description": "",
+                "tags": [],
+                "url": "youtube.com/watch?v=j0Rm3JDszVo"
+            }
+        ]
 
-            const raw_resource_urls=[
-                "29a.ch/sandbox/2012/imageerrorlevelanalysis/",
-                "2lingual.com/",
-                "4chanarchives.com/",
-                "4chansearch.com/",
-                "4plebs.org/",
-                "ahmia.fi/",
-                "amifloced.org/",
-                "anonymousplanet.org/guide.html",
-                "anvaka.github.io/map-of-reddit/",
-                "apc-cap.ic.gc.ca/pls/apc_anon/query_amat_cs$.startup",
-                "apps.london.gov.uk/street-trees/",
-                "archive.nyafuu.org/",
-                "archive.wakarimasen.moe/",
-                "archived.moe/",
-                "archiveofsins.com/",
-                "blockpath.com/",
-                "blog.tradint.io/trade-intelligence-tradint-what-is-it-and-why-is-it-important-cd1b34534283",
-                "boards.fireden.net/",
-                "brackets.substack.com/p/7-life-lessons-from-25-years-in-counterterrorism",
-                "breachchecker.com/",
-                "camas.github.io/reddit-search/",
-                "chaos.institute/deanonymizing-hidden-services-guide/",
-                "chaos.institute/fingeprinting-tor-relays-with-jarm/",
-                "cheatsheet.haax.fr/open-source-intelligence-osint/platforms-hunting/linkedin/",
-                "clubhousedb.com/",
-                "commoncrawl.org/",
-                "crxcavator.io/",
-                "darksearch.io/",
-                "deepware.ai/",
-                "desuarchive.org/",
-                "dfw1n.github.io/DFW1N-OSINT/",
-                "docs.google.com/document/d/14li22wAG2Wh2y0UhgBjbqEvZJCDsNZY8vpUAJ_jJ5X8/",
-                "docs.google.com/spreadsheets/d/18rtqh8EG2q1xBo2cLNyhIDuK9jrPGwYr9DI2UncoqJQ/htmlview",
-                "docs.google.com/spreadsheets/d/1JxBbMt4JvGr--G0Pkl3jP9VDTBunR2uD3_faZXDvhxc",
-                "docs.google.com/spreadsheets/d/<document ID>/export?format=<file format>`",
-                "domain-checker.valimail.com/dmarc/",
-                "en.wikipedia.org/wiki/List_of_intelligence_gathering_disciplines",
-                "fas.org/irp/doddir/army/tc3-22-69.pdf",
-                "fingerprintjs.com/blog/external-protocol-flooding/",
-                "fotoforensics.com/",
-                "github.com/BushidoUK/CTI-Lexicon/blob/main/Lexicon.md",
-                "github.com/Datalux/Osintgram",
-                "github.com/Datalux/Osintgram",
-                "github.com/Dutchosintguy/OSINT-Discord-resources",
-                "github.com/GONZOsint/gitrecon",
-                "github.com/ItIsMeCall911/Awesome-Telegram-OSINT",
-                "github.com/Lifka/hacking-resources",
-                "github.com/MobileFirstLLC/social-media-hacker-list",
-                "github.com/Ph055a/OSINT_Collection",
-                "github.com/Rog3rSm1th/Profil3r",
-                "github.com/ThoughtfulDev/EagleEye",
-                "github.com/altilunium/wistalk",
-                "github.com/datamllab/awesome-deepfakes-materials",
-                "github.com/davidkowalk/twitter_geolocate",
-                "github.com/dessant/search-by-image",
-                "github.com/dessant/web-archives",
-                "github.com/edgi-govdata-archiving/awesome-website-change-monitoring",
-                "github.com/fastfire/deepdarkCTI",
-                "github.com/igorbrigadir/twitter-advanced-search",
-                "github.com/ipinfo/cli",
-                "github.com/kennbroorg/iKy",
-                "github.com/megadose/toutatis",
-                "github.com/megadose/toutatis",
-                "github.com/netkas-zz/KikToolset",
-                "github.com/nixintel/o365chk/",
-                "github.com/pixelbubble/ProtOSINT",
-                "github.com/s0md3v/Zen",
-                "github.com/sinwindie/OSINT",
-                "github.com/sundowndev/PhoneInfoga",
-                "github.com/th3unkn0n/osi.ig",
-                "github.com/th3unkn0n/osi.ig",
-                "github.com/warifp/FacebookToolkit",
-                "grep.app/",
-                "haveibeenpwned.com",
-                "haveibeenzucked.com/",
-                "i-sight.com/resources/101-osint-resources-for-investigators/",
-                "i.instagram.com/api/v1/users/lookup/id/info",
-                "intelx.io/",
-                "intelx.io/tools",
-                "jakecreps.com/osint-tool-tuesday-email-breach-data-office-365-bangs/",
-                "jakecreps.com/osint-tool-tuesday-social-media-phone-number-youtube/",
-                "jakecreps.com/osint-workflow-wednesday-extracting-telegram-photos/",
-                "joe.black/leakengine.html",
-                "justdeleteme.xyz/",
-                "justgetmydata.com/",
-                "labs.internetwache.org/ds_store/",
-                "leakcheck.net/",
-                "leakpeek.com/",
-                "livingatlas.arcgis.com/",
-                "lumendatabase.org/",
-                "mattw.io/youtube-geofind/location",
-                "mc.bbbike.org/mc/",
-                "mcbroken.com/",
-                "medium.com/the-first-digit/osint-how-to-find-information-on-anyone-5029a3c7fd56",
-                "metaosint.github.io/",
-                "minecraft-statistic.net/en/players/",
-                "mrrickdiesel10-6.medium.com/persint-a-social-engineering-spin-on-your-everyday-osint-4bfa1b9a56c1",
-                "netbootcamp.org/osinttools/",
-                "netbootcamp.org/pastesearch.html",
-                "nixintel.info/osint-tools/using-pgp-keys-for-osint/",
-                "nixintel.info/osint-tools/using-pgp-keys-for-osint/",
-                "nixintel.info/osint/chronolocation-clues-quiztime-11th-may-2020/",
-                "om.1881.no/nyttige-sider/kataloger-i-utlandet",
-                "one-plus.github.io/",
-                "opaque.link/post/opsecguide/",
-                "opendata.vancouver.ca/explore/dataset/street-trees/",
-                "openinframap.org/",
-                "osint.fans/australia-osint-data-sources",
-                "osint.party",
-                "osint.party/api/rss/fresh",
-                "osint.rest/",
-                "osint.sh/",
-                "osintcombine.tools/",
-                "osintcurio.us/2019/07/16/searching-instagram/",
-                "osintcurio.us/2021/05/06/investigating-discord-a-primer/",
-                "owlspace.xyz/cybersec/tg-nearby/",
-                "parseek.com/",
-                "pentestbook.six2dez.com/recon/public-info-gathering",
-                "phonebook.cz/",
-                "phonebook.cz/",
-                "pixwox.com/",
-                "platform.sensity.ai/deepfake-detection",
-                "platform.sensity.ai/deepfake-detection",
-                "pwndb2am4tzkvold.onion.ws/",
-                "randomarchive.com/",
-                "safing.io/portmaster/",
-                "schemeflood.com/",
-                "search.buzz.im/",
-                "search.goo.ne.jp/",
-                "search4chan.org/",
-                "search4faces.com/tt00/index.html",
-                "sector035.nl/articles/2021-17",
-                "sector035.nl/articles/category:week-in-osint",
-                "sector035.nl/links",
-                "skylens.io/",
-                "smihub.com/",
-                "soar.earth/",
-                "ssd.eff.org/",
-                "start.me/p/L1rEYQ/osint4all",
-                "start.me/p/QRqE7r/osint",
-                "start.me/p/rx6Qj8/nixintel-s-osint-resource-list",
-                "start.me/p/rxeRqr/aml-toolbox",
-                "steamid.uk/",
-                "steamrep.com/",
-                "sundowndev.github.io/PhoneInfoga/install/",
-                "sundowndev.github.io/PhoneInfoga/install/",
-                "t.me/TgScanRobot/",
-                "tcxsproject.com.br/dev/Biblioteca%20Livros%20Hacker%20Gorpo%20Orko/OSINT%20101-What%20the%20Internet%20Knows.pdf",
-                "techjournalism.medium.com/how-new-satellite-data-sources-enhance-investigative-journalism-f6f9ea71f4af",
-                "thebarchive.com/",
-                "thedatapack.com/tools/find-github-user-email/",
-                "themarkup.org/blacklight",
-                "tompatrickjarvis.medium.com/useful-google-sheets-functions-for-osint-research-71337f1b5407",
-                "topazlabs.com/gigapixel-ai/",
-                "tradint.io/",
-                "transparencyreport.google.com/safe-browsing/search",
-                "tree-map.nycgovparks.org/",
-                "tweeterid.com/",
-                "twitter.com/BitBangingBytes/status/1388716726783672326?s=09",
-                "twitter.com/Geluchat/status/1405081455483568136",
-                "twitter.com/IntelTechniques/status/1403384373928292362?s=20",
-                "twitter.com/ai6yrham/status/1382371967618097157",
-                "twitter.com/henkvaness/status/1399291128244015104",
-                "userhunt.co/",
-                "userhunt.co/",
-                "usersearch.org/",
-                "vividmaps.com/largest-country-world/",
-                "vrn.aaronsplace.co.uk",
-                "warosu.org/",
-                "web.datatree.com/",
-                "whitehatinspector.blogspot.com/2021/02/using-osint-to-find-missing-persons.html",
-                "whitehatinspector.blogspot.com/2021/03/skype-hidden-osint-goldmine.html",
-                "wireless2.fcc.gov/UlsApp/UlsSearch/searchLicense.jsp",
-                "www.adl.org/education-and-resources/resource-knowledge-base/adl-heat-map",
-                "www.artofmanliness.com/articles/how-to-develop-the-situational-awareness-of-jason-bourne/",
-                "www.aware-online.com/find-an-instagram-user-id/",
-                "www.aware-online.com/find-the-email-address-of-a-linkedin-user/",
-                "www.aware-online.com/finding-witnesses-via-strava/",
-                "www.aware-online.com/osint-tools/instagram-tools/",
-                "www.baidu.com/",
-                "www.bellingcat.com/news/2021/05/28/us-soldiers-expose-nuclear-weapons-secrets-via-flashcard-apps/",
-                "www.bing.com/maps",
-                "www.blockint.nl/the-osint-library/",
-                "www.cqcore.uk/are-you-linked-in/",
-                "www.cqcore.uk/email-to-username/",
-                "www.darktracer.com/",
-                "www.effect.group",
-                "www.exploit-db.com/google-hacking-database",
-                "www.freemaptools.com/",
-                "www.ghostcodes.com/",
-                "www.gosecure.net/blog/2021/05/27/step-by-step-how-to-deanonymize-emails-on-linkedin/",
-                "www.idcrawl.com/",
-                "www.instagram.com/username/?__a=1",
-                "www.inteltechniques.net/courses/open-source-intelligence",
-                "www.mapchannels.com/DualMaps.aspx",
-                "www.militaryfactory.com/smallarms/guns-by-country.php",
-                "www.omnisci.com/demos/tweetmap",
-                "www.osintcombine.com/tiktok-quick-search",
-                "www.osintcombine.com/tools",
-                "www.pixsy.com/",
-                "www.qrz.com/",
-                "www.redditinvestigator.com/",
-                "www.safetydetectives.com/amp/blog/what-is-shodan-and-how-to-use-it-most-effectively/",
-                "www.sans.org/blog/-must-have-free-resources-for-open-source-intelligence-osint-/",
-                "www.sans.org/blog/list-of-resource-links-from-open-source-intelligence-summit-2021/",
-                "www.spydialer.com/",
-                "www.theregister.com/2021/05/14/browser_fingerprinting_flaw/",
-                "www.toddington.com/resources/cheat-sheets/",
-                "www.trendsmap.com/map",
-                "www.uk-osint.net/creatingids.html",
-                "www.uk-osint.net/motorvehicle.html",
-                "www.yamli.com/",
-                "www.youtube.com/watch?v=-JjAZF2-Tno",
-                "www.youtube.com/watch?v=15xj70IpOTw",
-                "www.youtube.com/watch?v=9kPPlkAo3ZM",
-                "www.youtube.com/watch?v=KpnVjE8bSvQ",
-                "www.youtube.com/watch?v=NqzvuUXkv6c",
-                "www.youtube.com/watch?v=aSu7ny6dEXA",
-                "www.youtube.com/watch?v=ljiRh-nOP1Y",
-                "www.zoomeye.org/",
-                "yasiv.com/reddit",
-                "youtu.be/Fpsr3oWEP8M",
-                "youtu.be/L-TOQeHfwBs",
-                "youtu.be/XaHWcttD0tM",
-                "youtu.be/aVwl892hqb4",
-                "youtu.be/vJOQdWk6WMw",
-                "youtube.com/watch?v=dU6KG221MaM",
-                "youtube.com/watch?v=j0Rm3JDszVo",
-            ]
+
 
     return {
         parseUrl,
