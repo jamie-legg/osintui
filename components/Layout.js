@@ -50,7 +50,7 @@ export default function Layout({ children, footerRef, pageNo }) {
   
   const {theme, setTheme} = useTheme()
   const [darkMode, setDarkMode] = useState(true)
-  const [nav, setNav] = useState(navigation)
+  const [nav, setNav] = useState(navigation[pageNo])
 
   useEffect(() => {
     //turn current off on each key of navigation
@@ -137,7 +137,7 @@ export default function Layout({ children, footerRef, pageNo }) {
                           item.current
                             ? 'bg-gray-200 border-gray-600 text-gray-800'
                             : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                          'group border-l-4 py-2 px-3 flex items-center text-base font-medium header'
+                          'group border-l-4 py-2 px-3 flex items-center text-base font-medium header uppercase'
                         )}
                         aria-current={item.current ? 'page' : undefined}
                       >
@@ -190,7 +190,7 @@ export default function Layout({ children, footerRef, pageNo }) {
                       item.current
                         ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
                         : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
-                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium'
+                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
                     )}
                   >
                     <item.icon
@@ -204,7 +204,13 @@ export default function Layout({ children, footerRef, pageNo }) {
                   </a>
                   </Link>
                 ))}
+              <div className="border-4 title uppercase border-black m-2 p-2 ">
+                {navigation[pageNo].name } help
+                <div className="header uppercase">filter</div>
+                <div className="header uppercase">exclude</div>
               </div>
+              </div>
+
             </div>
             <div className="ml-2 flex w-full">
               <ThemeToggle callback={toggleTheme}></ThemeToggle>
@@ -215,7 +221,7 @@ export default function Layout({ children, footerRef, pageNo }) {
       </div>
 
       {/* Content area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col dark:bg-gray-900">
         
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
         <button
@@ -226,7 +232,7 @@ export default function Layout({ children, footerRef, pageNo }) {
               <span className="sr-only">Open sidebar</span>
               <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
             </button>
-          {navigation[0].name} |&nbsp;
+          {navigation[pageNo].name} |&nbsp;
           <span className="header text-xl">{target.username}</span>
           <span className="items-center h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2">+{target.vectors}</span>
           <div className="relative ml-10 lg:hidden">
