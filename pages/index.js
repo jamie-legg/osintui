@@ -66,11 +66,6 @@ export default function Home() {
       <div>
         <Layout pageNo={0} footerRef={footerRef}>
 
-      {/* Content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-
-        {/* Main content */}
-        <div className="flex-1 flex items-stretch overflow-hidden">
           <main className="flex-1 overflow-y-auto">
             <div className="pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -98,12 +93,6 @@ export default function Home() {
             </div>
           </main>
 
-          {/* Current target sidebar */}
-          <aside className="hidden w-96 bg-white dark:bg-black p-8 border-l border-gray-200 overflow-y-auto lg:block">
-            <CurrentTarget operation={currentOperation}/>
-          </aside>
-        </div>
-      </div>
         </Layout>
       </div>
 

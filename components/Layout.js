@@ -24,6 +24,7 @@ import Link from 'next/link'
 import { useTheme } from 'next-themes'
 import { classNames } from '../shared/utils'
 import useSurface from '../hooks/useSurface'
+import CurrentTarget from './CurrentTarget'
 
 const navigation = [
   { name: 'Identities', href: '/', icon: IdentificationIcon, current: false },
@@ -238,8 +239,20 @@ export default function Layout({ children, footerRef, pageNo }) {
           </div>
 
         </div>
+              {/* Content area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+
+{/* Main content */}
+<div className="flex-1 flex items-stretch overflow-hidden">
 
         {children}
+                  {/* Current target sidebar */}
+                  <aside className="hidden w-96 bg-white dark:bg-black p-8 border-l border-gray-200 overflow-y-auto lg:block">
+            <CurrentTarget operation={target}/>
+          </aside>
+
+        </div>
+        </div>
         <footer className="flex items-center justify-center w-full h-16 border-t">
         <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
           <input ref={footerRef} className="w-full h-6 bg-gray-200 dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />

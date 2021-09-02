@@ -96,7 +96,7 @@ const useSurface = () => {
       }
     
     const getRawResources = () => {
-        return raw_resource_urls
+        return raw_resources
     }
 
     //! ITS ALL DATA FROM HERE ON OUT
@@ -562,6 +562,15 @@ const useSurface = () => {
                 surface: ["tags", "likes", "music", "comments", "title"],
             },
         ]
+
+        //? RESOURCES START HERE
+        //! RESOURCES START HERE
+        //? RESOURCES START HERE
+        //! RESOURCES START HERE
+        //? RESOURCES START HERE
+        //! RESOURCES START HERE
+        //? RESOURCES START HERE
+        //! RESOURCES START HERE
 
         const raw_resources = [
             {

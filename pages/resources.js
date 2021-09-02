@@ -219,25 +219,19 @@ export default function Resources() {
                             <h3>{letter}</h3>
                         </div>
                         <ul role="list" className="relative z-0 divide-y divide-gray-200">
-                            {resources.filter(r => r.startsWith(letter.toLowerCase())).map((url, i) => {
-                                const resource = {
-                                    "url": url,
-                                    "name": url,
-                                    "role": directory.A[0].role,
-                                    "imageUrl": directory.A[0].imageUrl
-                                };
+                            {resources.filter(r => r.tags[0].startsWith(letter.toLowerCase())).map((url, i) => {
                                 return(
                                 <li key={i} className="bg-white">
                                     <div className="relative px-6 py-5 flex items-center space-x-3 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                                         <div className="flex-shrink-0">
-                                            <img className="h-10 w-10 rounded-full" src={resource.imageUrl} alt="" />
+                                            <img className="h-10 w-10 rounded-full" src={url.url} alt="" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <a href={"https://" + resource.url} className="focus:outline-none">
+                                            <a href={"https://" + url.url} className="focus:outline-none">
                                                 {/* Extend touch target to entire panel */}
                                                 <span className="absolute inset-0" aria-hidden="true" />
-                                                <p className="text-sm font-medium text-gray-900">#{i}: {url}</p>
-                                                <p className="text-sm text-gray-500 truncate">{url}</p>
+                                                <p className="text-sm font-medium text-gray-900">#{i}: {url.url}</p>
+                                                <p className="text-sm text-gray-500 truncate">{url.tags.map(t => <span className="title bg-black uppercase m-1 p-0.5 text-white">{t}</span>)}</p>
                                             </a>
                                         </div>
                                     </div>
