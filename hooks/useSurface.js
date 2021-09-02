@@ -1647,13 +1647,13 @@ const useSurface = () => {
             {
                 "title": "",
                 "description": "",
-                "tags": ["threat profiling","intel"],
+                "tags": ["threat","intel","profiling"],
                 "url": "www.cqcore.uk/email-to-username/"
             },
             {
                 "title": "",
                 "description": "",
-                "tags": ["search","keyword mornitoring", "darkweb data collection"],
+                "tags": ["search","keyword","mornitoring", "darkweb"],
                 "url": "www.darktracer.com/"
             },
             {
@@ -1679,12 +1679,6 @@ const useSurface = () => {
                 "description": "",
                 "tags": ["search","number","username"],
                 "url": "www.idcrawl.com/"
-            },
-            {
-                "title": "",
-                "description": "",
-                "tags": ["???????"],
-                "url": "www.instagram.com/username/?__a=1"
             },
             {
                 "title": "",
@@ -1851,7 +1845,7 @@ const useSurface = () => {
             {
                 "title": "",
                 "description": "",
-                "tags": ["intelligence operator", "video", "guide"],
+                "tags": ["intel", "video", "guide"],
                 "url": "youtube.com/watch?v=dU6KG221MaM"
             },
             {
