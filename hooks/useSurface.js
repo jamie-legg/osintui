@@ -1488,13 +1488,13 @@ const useSurface = () => {
             {
                 "title": "",
                 "description": "",
-                "tags": ["snapchat","ghostcodes","list"],
+                "tags": ['maps',"list","general"],
                 "url": "www.freemaptools.com/"
             },
             {
                 "title": "",
                 "description": "",
-                "tags": [],
+                "tags": ["snapchat","ghostcodes","list"],
                 "url": "www.ghostcodes.com/"
             },
             {
