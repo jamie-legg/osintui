@@ -92,7 +92,7 @@ export default function Layout({ children, footerRef, pageNo }) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-75" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-900 bg-opacity-75" />
           </Transition.Child>
           <Transition.Child
             as={Fragment}
@@ -103,7 +103,7 @@ export default function Layout({ children, footerRef, pageNo }) {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative max-w-xs w-full bg-white dark:bg-black pt-5 pb-4 flex-1 flex flex-col">
+            <div className="relative max-w-xs w-full bg-white dark:bg-gray-900 pt-5 pb-4 flex-1 flex flex-col">
               <Transition.Child
                 as={Fragment}
                 enter="ease-in-out duration-300"
@@ -172,7 +172,7 @@ export default function Layout({ children, footerRef, pageNo }) {
       <div className="hidden md:flex md:flex-shrink-0">
         <div className="w-64 flex flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <nav className="bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
+          <nav className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
             <div className="flex-shrink-0 px-4 flex items-center">
               <div className="flex-shrink-0">
                   <p className="title text-3xl">
@@ -204,11 +204,9 @@ export default function Layout({ children, footerRef, pageNo }) {
                   </a>
                   </Link>
                 ))}
-              <div className="border-4 title uppercase border-black m-2 p-2 ">
-                {navigation[pageNo].name } help
-                <div className="header uppercase">filter</div>
-                <div className="header uppercase">exclude</div>
-              </div>
+              {pageNo === 0? <div className="transition-all hover:bg-gray-700 dark:bg-white dark:text-gray-900 cursor-pointer bg-gray-900 text-white title px-2 py-2 m-2 uppercase text-center">ADD DATA</div>
+              : pageNo === 1? <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW RESOURCE</div> :
+              <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW OPERATION</div>}
               </div>
 
             </div>
@@ -234,14 +232,14 @@ export default function Layout({ children, footerRef, pageNo }) {
             </button>
           {navigation[pageNo].name} |&nbsp;
           <span className="header text-xl">{target.username}</span>
-          <span className="items-center h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2">+{target.vectors}</span>
+          <span className="items-center h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">+{target.vectors}</span>
           <div className="relative ml-10 lg:hidden">
-            <EyeIcon className="right-0 h-8 bg-black pt-0.5 dark:bg-white text-white dark:text-black text-xl px-2 ml-2" aria-hidden="true" />
+            <EyeIcon className="right-0 h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
 
           <div className="hidden lg:flex absolute right-10 place-self-end items-end text-3xl title uppercase">Current_Op
-          <UploadIcon className="h-8 bg-black dark:bg-white text-white dark:text-black text-xl px-2 ml-2" />
-          <DownloadIcon className="h-8 bg-black dark:bg-white text-white dark:text-black text-xl px-2 ml-2" />
+          <UploadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+          <DownloadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
           </div>
 
         </div>
@@ -253,16 +251,18 @@ export default function Layout({ children, footerRef, pageNo }) {
 
         {children}
                   {/* Current target sidebar */}
-                  <aside className="hidden w-96 bg-white dark:bg-black p-8 border-l border-gray-200 overflow-y-auto lg:block">
+                  <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 border-l border-gray-200 overflow-y-auto lg:block">
             <CurrentTarget operation={target}/>
           </aside>
 
         </div>
         </div>
         <footer className="flex items-center justify-center w-full h-16 border-t">
+        <ArrowNarrowRightIcon className="text-gray-500 inline-block h-5 w-5 ml-5" />
         <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
-          <input ref={footerRef} className="w-full h-6 bg-gray-200 dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
-          <ArrowNarrowRightIcon className="inline-block h-5 w-5 mr-5" />
+          
+          <input ref={footerRef} className="w-full h-6 border-none bg-white dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
+          
           
         </div>
       </footer>
