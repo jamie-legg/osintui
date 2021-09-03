@@ -2,7 +2,7 @@ import { Switch } from "@headlessui/react"
 import { DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon } from "@heroicons/react/outline"
 import { useEffect, useState } from "react"
 import useSurface from "../hooks/useSurface"
-import { DocumentRemoveIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
+import { DocumentRemoveIcon, PlusSmIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
 import { classNames } from "../shared/utils"
 import ModalDialog from "./ModalDialog"
 
@@ -88,7 +88,14 @@ export default function CurrentTarget({ operation, onChange }) {
                 </Switch.Label>
                 </Switch.Group>
                 <div className="block w-full aspect-w-10 aspect-h-10 rounded-lg object-cover overflow-hidden">
-                  <img src={photoEnabled? operation.profilePicUrl : "/static.jpeg"} alt="" className="object-cover" />
+                  {operation.profilePicUrl.length > 0 ? <img src={photoEnabled? operation.profilePicUrl : "/static.jpeg"} alt="" className="object-cover" /> : 
+                  <button type="button" class="block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2">
+                    <PhotographIcon className="inline w-7 h-7 text-gray-400"></PhotographIcon>
+                    <PlusSmIcon className="inline w-7 h-7 text-gray-400"></PlusSmIcon>
+                  <span class="mt-2 block text-sm font-medium text-gray-900">
+                    Add a new image
+                  </span>
+                </button>}
                 </div>
                 <div className="mt-4 flex items-start justify-between">
                   <div>

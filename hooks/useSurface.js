@@ -1,9 +1,9 @@
 import { AtSymbolIcon, GlobeAltIcon, InboxIcon, InboxInIcon, PhotographIcon, ShoppingBagIcon } from "@heroicons/react/outline";
 
 const defaultTarget = {
-    name: 'jamie legg',
-    username: '@jamie_legg_',
-    profilePicUrl: "https://pbs.twimg.com/profile_images/1314596328199127040/gI4PBZe2.jpg",
+    name: 'John Smith',
+    username: '@john_smith_',
+    profilePicUrl: "",
     identities: [],
     availableSurfaces: [],
     vectors: 0,
@@ -38,7 +38,6 @@ const useSurface = () => {
     };
 
     const addSurfaceToTarget = (provider) => {
-        console.log("ADDING");
         //get surface from surfaceMap
         const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
         // check if surface is already on target
@@ -57,7 +56,6 @@ const useSurface = () => {
     };
 
     const removeSurfaceFromTarget = (provider) => {
-        console.log("REMOVING");
         // find the relevant surfaces on the target and lower their priority, if priority is 0 remove
         const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
         surface.forEach(s => {

@@ -18,7 +18,7 @@ import {
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline'
-import { SearchIcon } from '@heroicons/react/solid'
+import { HeartIcon, SearchIcon } from '@heroicons/react/solid'
 import ThemeToggle from './ThemeToggle'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
@@ -45,13 +45,19 @@ const tabs = [
 ]
 
 
-export default function Layout({ children, footerRef, pageNo }) {
+export default function Layout({ children, storeOperations, footerRef, pageNo }) {
   
   
   const {theme, setTheme} = useTheme()
   const [darkMode, setDarkMode] = useState(true)
   const [nav, setNav] = useState(navigation[pageNo])
+  
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [ targetModalOpen, setTargetModalOpen] = useState(false)
+  const { getCurrentTarget } = useSurface();
+  const [target, setTarget] = useState(getCurrentTarget())
 
+  
   useEffect(() => {
     //turn current off on each key of navigation
     navigation.forEach(item => {
@@ -61,23 +67,17 @@ export default function Layout({ children, footerRef, pageNo }) {
     setNav(navigation)
   })
 
+
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
     setDarkMode(theme === 'dark')
   }
-  const { getCurrentTarget } = useSurface();
-  const [target, setTarget] = useState(getCurrentTarget())
-  useEffect(() => {
-    const handleTargetChange = () => {
-      setTarget(getCurrentTarget())
-    }
-    window.addEventListener('popstate', handleTargetChange)
-    return () => {
-      window.removeEventListener('popstate', handleTargetChange)
-    }
-  }, [])
 
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const openTargetModal = () => {
+    setTargetModalOpen(true)
+  }
+
+
 
   return (
     <div className="relative h-screen overflow-hidden flex">
@@ -210,7 +210,19 @@ export default function Layout({ children, footerRef, pageNo }) {
               </div>
 
             </div>
+            <div
+                    className={'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
+                    }
+                  >
+                    <HeartIcon
+                      className={'text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6'
+                      }
+                      aria-hidden="true"
+                    />
+                    <a href="https://www.buymeacoffee.com/osintjamie">Support</a>
+                  </div>
             <div className="ml-2 flex w-full">
+                  
               <ThemeToggle callback={toggleTheme}></ThemeToggle>
                 <p className="ml-5 header">Dark Mode</p>
             </div>
@@ -230,11 +242,11 @@ export default function Layout({ children, footerRef, pageNo }) {
               <span className="sr-only">Open sidebar</span>
               <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
             </button>
-          {navigation[pageNo].name} |&nbsp;
-          <span className="header text-xl">{target.username}</span>
+          {navigation[pageNo].name}<span className="hidden xl:block"> |&nbsp;
+          <span className="header text-xl">{target.username}</span></span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">+{target.vectors}</span>
           <div className="relative ml-10 lg:hidden">
-            <EyeIcon className="right-0 h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
+            <EyeIcon onClick={openTargetModal} className="right-0 h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
 
           <div className="hidden lg:flex absolute right-10 place-self-end items-end text-3xl title uppercase">Current_Op
