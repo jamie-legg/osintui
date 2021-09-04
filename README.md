@@ -6,9 +6,7 @@ This is an air-gapped application (No network interfaces) in order to ensure max
 
 ## Preview
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+Preview the code live at [osintui.com](https://osintui.com):
 
 ## Deploy your own
 
