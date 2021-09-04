@@ -1510,7 +1510,7 @@ const useSurface = () => {
             {
                 "title": "",
                 "description": "",
-                "tags": ["arms","list","genral",],
+                "tags": ["arms","list","general",],
                 "url": "www.militaryfactory.com/smallarms/guns-by-country.php"
             },
             {
@@ -1534,12 +1534,6 @@ const useSurface = () => {
             {
                 "title": "",
                 "description": "",
-                "tags": ["???????"],
-                "url": "www.qrz.com/"
-            },
-            {
-                "title": "",
-                "description": "",
                 "tags": ["shodan","search","devices","explainer"],
                 "url": "www.safetydetectives.com/amp/blog/what-is-shodan-and-how-to-use-it-most-effectively/"
             },
@@ -1558,7 +1552,7 @@ const useSurface = () => {
             {
                 "title": "",
                 "description": "",
-                "tags": [],
+                "tags": ["expoit", "guide"],
                 "url": "www.theregister.com/2021/05/14/browser_fingerprinting_flaw/"
             },
             {
@@ -1676,8 +1670,6 @@ const useSurface = () => {
                 "url": "youtube.com/watch?v=j0Rm3JDszVo"
             }
         ]
-
-
 
     return {
         parseUrl,

@@ -6,10 +6,12 @@ import {
   BellIcon,
   BriefcaseIcon,
   ChatIcon,
+  CodeIcon,
   CogIcon,
   DocumentSearchIcon,
   DownloadIcon,
   EyeIcon,
+  FireIcon,
   HomeIcon,
   IdentificationIcon,
   MenuAlt2Icon,
@@ -32,8 +34,9 @@ const navigation = [
   { name: 'Operations', href: '/operations', icon: DocumentSearchIcon, current: false },
 ]
 const secondaryNavigation = [
-  { name: 'Help', href: '#', icon: QuestionMarkCircleIcon },
-  { name: 'Logout', href: '#', icon: CogIcon },
+  { name: 'Source Code', href: 'https://github.com/jamie-legg/osintui', icon: CodeIcon },
+  { name: 'Support OSINT', href: 'https://www.buymeacoffee.com/osintjamie', icon: HeartIcon },
+  { name: 'Community', href: 'https://discord.gg/osintui', icon: FireIcon },
 ]
 const tabs = [
   { name: 'General', href: '#', current: true },
@@ -137,7 +140,7 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                           item.current
                             ? 'bg-gray-200 border-gray-600 text-gray-800'
                             : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                          'group border-l-4 py-2 px-3 flex items-center text-base font-medium header uppercase'
+                          'group border-l-4 py-2 px-3 flex items-center text-base font-medium header uppercase dark:text-gray-300'
                         )}
                         aria-current={item.current ? 'page' : undefined}
                       >
@@ -154,6 +157,28 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                   </div>
                   
                   <div className="ml-5 mb-5 mt-auto pt-8 space-y-1 flex">
+                      {secondaryNavigation.map((item) => (
+                  <Link href={item.href} key={item.name}>
+                  <a
+                    key={item.name}
+                    className={classNames(
+                      item.current
+                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
+                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
+                    )}
+                  >
+                    <item.icon
+                      className={classNames(
+                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                        'mr-3 flex-shrink-0 h-6 w-6'
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </a>
+                  </Link>
+                ))}
                     <ThemeToggle callback={toggleTheme}></ThemeToggle>
                     <p className="ml-5 header">Dark Mode</p>
                   </div>
@@ -188,6 +213,42 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                     key={item.name}
                     className={classNames(
                       item.current
+                        ? 'bg-gray-100 dark:bg-white dark:text-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
+                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
+                    )}
+                  >
+                    <item.icon
+                      className={classNames(
+                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                        'mr-3 flex-shrink-0 h-6 w-6'
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </a>
+                  </Link>
+                ))}
+              {pageNo === 0? <div className="transition-all hover:bg-gray-700 dark:bg-white dark:text-gray-900 cursor-pointer bg-gray-900 text-white title px-2 py-2 m-2 uppercase text-center">ADD DATA</div>
+              : pageNo === 1? <div className="text-gray-900 title px-2 py-2 uppercase w-full text-center">RESOURCE TAG FILTER
+              <div className="text-left w-full title">SEARCH TAGS</div>
+              <div className="w-full">
+                {target.availableSurfaces.map((item) => (
+                  <div className="inline-block items-center justify-between px-2 py-2 bg-gray-900">{item.name}</div>
+                ))}
+              </div>
+              <div className="text-left w-full title">SUGGESTED VECTORS</div>
+              </div> :
+              <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW OPERATION</div>}
+              </div>
+
+            </div>
+                  {secondaryNavigation.map((item) => (
+                  <Link href={item.href} key={item.name}>
+                  <a
+                    key={item.name}
+                    className={classNames(
+                      item.current
                         ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
                         : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
                       'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
@@ -204,23 +265,6 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                   </a>
                   </Link>
                 ))}
-              {pageNo === 0? <div className="transition-all hover:bg-gray-700 dark:bg-white dark:text-gray-900 cursor-pointer bg-gray-900 text-white title px-2 py-2 m-2 uppercase text-center">ADD DATA</div>
-              : pageNo === 1? <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW RESOURCE</div> :
-              <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW OPERATION</div>}
-              </div>
-
-            </div>
-            <div
-                    className={'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
-                    }
-                  >
-                    <HeartIcon
-                      className={'text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6'
-                      }
-                      aria-hidden="true"
-                    />
-                    <a href="https://www.buymeacoffee.com/osintjamie">Support</a>
-                  </div>
             <div className="ml-2 flex w-full">
                   
               <ThemeToggle callback={toggleTheme}></ThemeToggle>
@@ -236,17 +280,21 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
         <button
               type="button"
-              className="border-r mr-4 border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden"
+              className="border-r mr-4 border-gray-900 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
               <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
             </button>
-          {navigation[pageNo].name}<span className="hidden xl:block"> |&nbsp;
-          <span className="header text-xl">{target.username}</span></span>
-          <span className="items-center h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">+{target.vectors}</span>
+          <span className="border-r-4 border-gray-900 pr-4">{navigation[pageNo].name}</span>
+          <span className="hidden xl:block ">&nbsp;
+            <span className="pl-4 code text-xl py-2 hover:bg-gray-900 hover:text-white cursor-pointer">{target.username}</span>
+          </span>
+          <span className="items-center h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
+            +{target.vectors}
+          </span>
           <div className="relative ml-10 lg:hidden">
-            <EyeIcon onClick={openTargetModal} className="right-0 h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
+            <EyeIcon onClick={openTargetModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
 
           <div className="hidden lg:flex absolute right-10 place-self-end items-end text-3xl title uppercase">Current_Op
