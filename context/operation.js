@@ -44,7 +44,6 @@ export function OperationWrapper({ children }) {
     },
     addIdentityToTarget: (identity, provider ) => {
       const currentTarget = sharedState[0];
-      console.log('addIdentityToTarget', identity, provider);
       const { surface } = vectorMap.find(s => s.key === provider);
       // get index of provider from identity providers
       const providerIndex = providers.findIndex(p => p.surfaceKey === provider);
@@ -63,7 +62,6 @@ export function OperationWrapper({ children }) {
             });
         }
     });
-      console.log('addIdentityToTarget', currentTarget);
     },
     removeIdentityFromTarget: (provider) => {
       const target = sharedState[0];

@@ -66,9 +66,7 @@ export default function Home() {
   }
 
   const providerSuccess = (identity, provider) => {
-    console.log('providerSuccess', identity, provider);
     addIdentityToTarget(identity, provider)
-    console.log(operations[0]);
     setTarget(operations[0])
   };
 

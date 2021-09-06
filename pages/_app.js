@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const ops = getItem('operations')
     if(!ops) {
-      console.log("ready for new operations")
     }
     else if(ops.length == 0) {
       alert("no ops")

@@ -13,9 +13,7 @@ export default function ProviderNode({ observer, clicked, handler, provider, ico
 
   useEffect(() => {
     setIsClicked(clicked);
-    console.log(target);
     setTarget(operations[0])
-    console.log("effect observer", target);
   }, []);
 
   const { getProviderSurfaceVectors } = useSurface();

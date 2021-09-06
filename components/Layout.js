@@ -85,7 +85,6 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
   useEffect(() => {
     setTarget(ops[0])
-    console.log("operations changed");
   }, [ops])
 
   useEffect(() => {
