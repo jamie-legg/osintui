@@ -26,7 +26,7 @@ export default function Resources() {
               {/* Gallery */}
               <section aria-labelledby="identification-gallery"></section>
               <p className="mb-5 text-gray-500 dark:text-gray-300">
-                  Use your exposed low hanging fruit to guide the resources you should consume, then populate what you find in your documented vectors.</p>
+                  Use your exposed vectors to guide the resources you should consume, then populate what you find in your documented vectors.</p>
             <nav className="h-full overflow-y-auto" aria-label="Directory">
                 {letters.map((letter) => (
                     <div key={letter} className="relative">

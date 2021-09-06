@@ -59,42 +59,35 @@ const tabs = [
 
 
 export default function Layout({ children, changeOperations, footerRef, pageNo, onPageChange, onDataWipe }) {
+  
   const { getIdentityProviders } = useSurface();
   const operations = useOperation();
   const [target, setTarget] = useState(operations[0])
   const { theme, setTheme } = useTheme();
-  const [ nav, setNav ] = useState(navigation[pageNo]);
-  const [ sidebarOpen, setSidebarOpen ] = useState(false);
-  const [ darkMode, setDarkMode ] = useState(true);
-  const [ selectModalOpen, setSelectModalOpen ] = useState(false);
-  const [ targetModalOpen, setTargetModalOpen] = useState(false);
+  const [nav, setNav] = useState(navigation[pageNo]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [selectModalOpen, setSelectModalOpen] = useState(false);
+  const [targetModalOpen, setTargetModalOpen] = useState(false);
+  const providers = getIdentityProviders();
 
   const removeData = () => {
     onDataWipe()
   }
 
-  const openSelectModal = () => {
-    setSelectModalOpen(true)
+  const toggleSelectModal = () => {
+    setSelectModalOpen(!selectModalOpen)
   }
-  
-  
-  const providers = getIdentityProviders();
-
-  
-  
-  
-
-  
-  
 
 
   
+
   useEffect(() => {
     //turn current off on each key of navigation
     navigation.forEach(item => {
       item.current = false
     })
-    navigation[pageNo].current = true 
+    navigation[pageNo].current = true
     setNav(navigation)
   })
 
@@ -156,8 +149,8 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
                 </div>
               </Transition.Child>
               <div className="flex-shrink-0 px-4 flex items-center">
-                
-                {theme ==="dark"? <img className="w-24 h-24" src="/osintuiwhite.png"></img> : <img className="w-24 h-24" src="/osintuigray.png"></img>}
+
+                {theme === "dark" ? <img className="w-24 h-24" src="/osintuiwhite.png"></img> : <img className="w-24 h-24" src="/osintuigray.png"></img>}
                 <p className="title text-4xl">OSINTUI<span className="header text-xs">BETA</span></p>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
@@ -165,80 +158,80 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
                   <div className="space-y-1">
                     {navigation.map((item, i) => (
                       <Link href={item.href} key={i}>
+                        <a
+                          onClick={() => {
+                            onPageChange(i)
+                          }}
+                          className={classNames(
+                            item.current
+                              ? 'bg-gray-200 border-gray-600 text-gray-800'
+                              : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                            'group border-l-4 py-2 px-3 flex items-center text-base font-medium header uppercase dark:text-gray-300'
+                          )}
+                          aria-current={item.current ? 'page' : undefined}
+                        >
+                          <item.icon
+                            className={classNames(
+                              item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+                              'mr-4 flex-shrink-0 h-6 w-6'
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </a>
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="ml-5 mb-5 mt-auto pt-8 space-y-1 flex title">
+                    {secondaryNavigation.map((item) => (
+                      <Link href={item.href} key={item.name}>
+                        <a
+                          key={item.name}
+                          className={classNames(
+                            item.current
+                              ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                              : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
+                            'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
+                          )}
+                        >
+                          <item.icon
+                            className={classNames(
+                              item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                              'mr-3 flex-shrink-0 h-6 w-6'
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </a>
+                      </Link>
+                    ))}
+                    {tertiaryNavigation.map((item) => (
                       <a
                         onClick={() => {
-                          onPageChange(i)
+                          removeData()
                         }}
                         className={classNames(
                           item.current
-                            ? 'bg-gray-200 border-gray-600 text-gray-800'
-                            : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                          'group border-l-4 py-2 px-3 flex items-center text-base font-medium header uppercase dark:text-gray-300'
+                            ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                            : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
+                          'group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium'
                         )}
-                        aria-current={item.current ? 'page' : undefined}
                       >
                         <item.icon
                           className={classNames(
-                            item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-                            'mr-4 flex-shrink-0 h-6 w-6'
+                            item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                            'mr-3 flex-shrink-0 h-6 w-6'
                           )}
                           aria-hidden="true"
                         />
                         {item.name}
                       </a>
-                      </Link>
                     ))}
-                  </div>
-                  
-                  <div className="ml-5 mb-5 mt-auto pt-8 space-y-1 flex title">
-                      {secondaryNavigation.map((item) => (
-                  <Link href={item.href} key={item.name}>
-                  <a
-                    key={item.name}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
-                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
-                    )}
-                  >
-                    <item.icon
-                      className={classNames(
-                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
-                      )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                  </Link>
-                ))}
-                {tertiaryNavigation.map((item) => (
-                  <a
-                    onClick={() => {
-                      removeData()
-                    }}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
-                      'group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium'
-                    )}
-                  >
-                    <item.icon
-                      className={classNames(
-                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
-                      )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                ))}
                     <ThemeToggle callback={toggleTheme}></ThemeToggle>
                     <p className="ml-5 header">Dark Mode</p>
                   </div>
-                  
+
                 </nav>
               </div>
             </div>
@@ -255,100 +248,100 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <nav className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
             <div className="flex-shrink-0 px-4 flex items-center">
-            {theme ==="dark"? <img className="w-16 h-16" src="/osintuigray.png"></img> : <img className="w-16 h-16" src="/osintuiwhite.png"></img>}
-                  <p className="title text-5xl px-2">
-                      OSINTUI
-                  </p>
+              {theme === "dark" ? <img className="w-16 h-16" src="/osintuigray.png"></img> : <img className="w-16 h-16" src="/osintuiwhite.png"></img>}
+              <p className="title text-5xl px-2">
+                OSINTUI
+              </p>
             </div>
             <div className="flex-grow mt-5 flex flex-col">
               <div className="flex-1 space-y-1">
                 {navigation.map((item, i) => (
                   <Link href={item.href} key={item.name}>
-                  <a
-                    key={item.name}
-                    onClick={() => {
-                      onPageChange(i)
-                    }}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-100 dark:bg-white dark:text-gray-900 border-gray-800 dark:border-gray-50 text-gray-800'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
-                      'title group border-l-4 py-2 px-3 flex items-center text-xl font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
-                    )}
-                  >
-                    <item.icon
+                    <a
+                      key={item.name}
+                      onClick={() => {
+                        onPageChange(i)
+                      }}
                       className={classNames(
-                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
+                        item.current
+                          ? 'bg-gray-100 dark:bg-white dark:text-gray-900 border-gray-800 dark:border-gray-50 text-gray-800'
+                          : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
+                        'title group border-l-4 py-2 px-3 flex items-center text-xl font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
                       )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
+                    >
+                      <item.icon
+                        className={classNames(
+                          item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                          'mr-3 flex-shrink-0 h-6 w-6'
+                        )}
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </a>
                   </Link>
                 ))}
-              {pageNo === 0? <div className="transition-all hover:bg-gray-700 dark:bg-white dark:text-gray-900 cursor-pointer bg-gray-900 text-white title px-2 py-2 m-2 uppercase text-center">ADD DATA</div>
-              : pageNo === 1? <div className="text-gray-900 title px-2 py-2 uppercase w-full text-center">RESOURCE TAG FILTER
-              <div className="text-left w-full title">SEARCH TAGS</div>
-              <div className="w-full">
-                {target.availableSurfaces ? target.availableSurfaces.map((item) => (
-                  <div className="inline-block items-center justify-between px-2 py-2 bg-gray-900">{item.name}</div>
-                )):null}
-              </div>
-              <div className="text-left w-full title">SUGGESTED VECTORS</div>
-              </div> :
-              <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW OPERATION</div>}
+                {pageNo === 0 ? <div className="transition-all hover:bg-gray-700 dark:bg-white dark:text-gray-900 cursor-pointer bg-gray-900 text-white title px-2 py-2 m-2 uppercase text-center">ADD DATA</div>
+                  : pageNo === 1 ? <div className="text-gray-900 title px-2 py-2 uppercase w-full text-center">FILTER SUGGESTED
+                    <div className="text-left w-full title">SEARCH TAGS</div>
+                    <div className="w-full">
+                      {target.availableSurfaces ? target.availableSurfaces.map((item) => (
+                        <div className="inline-block items-center justify-between px-2 py-2 bg-gray-900">{item.name}</div>
+                      )) : null}
+                    </div>
+                    <div className="text-left w-full title">SUGGESTED VECTORS</div>
+                  </div> :
+                    <div className="cursor-pointer bg-gray-900 text-white title px-2 py-2 uppercase">NEW OPERATION</div>}
               </div>
 
             </div>
-                  {secondaryNavigation.map((item) => (
-                  <Link href={item.href} key={item.name}>
-                  <a
-                    key={item.name}
+            {secondaryNavigation.map((item) => (
+              <Link href={item.href} key={item.name}>
+                <a
+                  key={item.name}
+                  className={classNames(
+                    item.current
+                      ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xl',
+                    'group border-l-4 py-2 px-3 flex items-center text-sm font-medium'
+                  )}
+                >
+                  <item.icon
                     className={classNames(
-                      item.current
-                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xl',
-                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium'
+                      item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                      'mr-3 flex-shrink-0 h-6 w-6'
                     )}
-                  >
-                    <item.icon
-                      className={classNames(
-                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
-                      )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                  </Link>
-                ))}
-                {tertiaryNavigation.map((item) => (
-                  <a
-                    onClick={() => {
-                      removeData()
-                    }}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
-                      'group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium'
-                    )}
-                  >
-                    <item.icon
-                      className={classNames(
-                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
-                      )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                ))}
+                    aria-hidden="true"
+                  />
+                  {item.name}
+                </a>
+              </Link>
+            ))}
+            {tertiaryNavigation.map((item) => (
+              <a
+                onClick={() => {
+                  removeData()
+                }}
+                className={classNames(
+                  item.current
+                    ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
+                  'group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium'
+                )}
+              >
+                <item.icon
+                  className={classNames(
+                    item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                    'mr-3 flex-shrink-0 h-6 w-6'
+                  )}
+                  aria-hidden="true"
+                />
+                {item.name}
+              </a>
+            ))}
             <div className="ml-2 flex w-full text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-                  
+
               <ThemeToggle callback={toggleTheme}></ThemeToggle>
-                <p className="ml-5 text-sm font-medium text-gray-600">Dark Mode</p>
+              <p className="ml-5 text-sm font-medium text-gray-600">Dark Mode</p>
             </div>
           </nav>
         </div>
@@ -356,56 +349,56 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
       {/* Content area */}
       <div className="flex-1 flex flex-col dark:bg-gray-900">
-        <SelectModal onChange={setTarget} open={selectModalOpen} providers={providers} target={target} onClose={setSelectModalOpen}></SelectModal>
+        <SelectModal providers={providers} target={target} open={selectModalOpen} onChange={setTarget} onClose={toggleSelectModal}></SelectModal>
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
-        <button
-              type="button"
-              className="border-r mr-4 border-gray-900 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <span className="sr-only">Open sidebar</span>
-              <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
-            </button>
+          <button
+            type="button"
+            className="border-r mr-4 border-gray-900 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 md:hidden"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <span className="sr-only">Open sidebar</span>
+            <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
+          </button>
           <span className="border-r-4 border-gray-900 pr-4">{navigation[pageNo].name}</span>
           <span className="hidden xl:block ">&nbsp;
-            <span onClick={() => openSelectModal()} className="pl-4 code text-xl py-2 hover:bg-gray-900 hover:text-white cursor-pointer">{target.username}</span>
+            <span onClick={() => toggleSelectModal()} className="pl-4 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">{target.username}</span>
           </span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
             +{target.vectors}
           </span>
           <div className="relative ml-10 lg:hidden">
-            <EyeIcon onClick={openTargetModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
+            <EyeIcon onClick={toggleSelectModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
 
           <div className="hidden lg:flex absolute right-10 place-self-end items-end text-3xl title uppercase">Current_Op
-          <UploadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-          <DownloadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <UploadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <DownloadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
           </div>
 
         </div>
-              {/* Content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Content area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
 
-{/* Main content */}
-<div className="flex-1 flex items-stretch overflow-hidden">
+          {/* Main content */}
+          <div className="flex-1 flex items-stretch overflow-hidden">
 
-        {children}
-                  {/* Current target sidebar */}
-                  <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 border-l border-gray-200 overflow-y-auto lg:block">
-            <CurrentTarget operation={target}/>
-          </aside>
+            {children}
+            {/* Current target sidebar */}
+            <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 border-l border-gray-200 overflow-y-auto lg:block">
+              <CurrentTarget operation={target} />
+            </aside>
 
-        </div>
+          </div>
         </div>
         <footer className="flex items-center justify-center w-full h-16 border-t">
-        <ArrowNarrowRightIcon className="text-gray-500 inline-block h-5 w-5 ml-5" />
-        <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
-          
-          <input ref={footerRef} className="w-full h-6 border-none bg-white dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
-          
-          
-        </div>
-      </footer>
+          <ArrowNarrowRightIcon className="text-gray-500 inline-block h-5 w-5 ml-5" />
+          <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
+
+            <input ref={footerRef} className="w-full h-6 border-none bg-white dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
+
+
+          </div>
+        </footer>
       </div>
     </div>
   )

@@ -30,7 +30,7 @@ export default function ProviderNode({ handler, provider, icon = null }) {
         <div className="text-xl title font-medium text-gray-900 dark:text-white text-right">{provider.name}</div>
       </div>
       <div className="row col-span-3">
-        <PlusIcon className="mx-auto w-12 h-12 text-center text-white group-hover:text-gray-300 dark:border-gray-900 hover:border-gray-300 "></PlusIcon>
+        <PlusIcon className="mx-auto w-12 h-12 text-center text-white group-hover:text-gray-300 dark:border-gray-900 hover:border-gray-300 dark:text-gray-600 dark:hover:text-gray-300"></PlusIcon>
       </div>
       <div className={classNames(clicked ? 
         "text-white dark:text-gray-900 bg-gray-900 dark:bg-white" : 
