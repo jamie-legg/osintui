@@ -39,12 +39,18 @@ function classNames(...classes) {
 
 export default function Home() {
   const operations = useOperation();
+  const { getIdentityProviders, getOtherVectors, getDefaultTargetState } = useSurface();
   const [selectedProvider, setSelectedProvider] = useState(null);
-  const [target, setTarget] = useState(operations[0]);
+  const [target, setTarget] = useState(getDefaultTargetState()[0]);
+
+  useEffect(() => {
+    setTarget(operations[0])
+  }, [operations])
+
   const [modalOpen, setModalOpen] = useState(false);
 
 
-  const { getIdentityProviders, getOtherVectors } = useSurface();
+  
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
@@ -59,8 +65,13 @@ export default function Home() {
     }
   }
 
-  const providerSuccess = (identity, provider) => addIdentityToTarget(identity, provider);
-  const providerFail = (provider) => removeIdentityFromTarget(provider);
+  const providerSuccess = (identity, provider) => {
+    console.log('providerSuccess', identity, provider);
+    addIdentityToTarget(identity, provider)
+    console.log(operations[0]);
+    setTarget(operations[0])
+  };
+
     
   
 
@@ -87,13 +98,13 @@ export default function Home() {
                   className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-3xl:gap-x-8"
                 >
                   {getIdentityProviders().map((provider, i) => (
-                    <ProviderNode clicked={target.identities[i] && target.identities[i].username} handler={TargetIdentityHandler} provider={provider} key={provider.id} index={i} />
+                    <ProviderNode observable={target} clicked={target.identities[i] && target.identities[i].username} handler={TargetIdentityHandler} provider={provider} key={i} index={i} />
                   ))}
                   <div className="w-full block col-span-2 xl:col-span-3 2xl:col-span-5">
                 <span className="title text-2xl uppercase">Implicit Providers</span>
                   </div>
                     {getOtherVectors().map((provider, i) => (
-                      <ProviderNode handler={TargetIdentityHandler} provider={provider} icon={provider.icon} key={provider.id} index={i} />
+                      <ProviderNode handler={TargetIdentityHandler} provider={provider} icon={provider.icon} key={i} index={i} />
                   ))}
                 </ul>
               </section>

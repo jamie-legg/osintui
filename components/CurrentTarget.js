@@ -8,15 +8,14 @@ import ModalDialog from "./ModalDialog"
 import { useOperation } from '../context/operation'
 import SelectModal from "./SelectModal"
 
-export default function CurrentTarget({ onChange, currentTarget }) {
+export default function CurrentTarget({ onChange }) {
+
+  
   const [isOpen, setIsOpen] = useState(false)
-  const { getRandomName, getIdentityProviders } = useSurface();
-  const [target, setTarget] = useState(currentTarget)
+  const { getIdentityProviders } = useSurface();
+  const { operation, setOperation } = useOperation();
+  const [target, setTarget] = useState(useOperation()[0])
   
-  
-  useEffect(() => {
-    setTarget(currentTarget)
-  }, [currentTarget])
 
   const [lowHangingDialogOpen, setLowHangingDialogOpen] = useState(false)
   const [photoEnabled, setPhotoEnabled] = useState(true)
@@ -25,6 +24,23 @@ export default function CurrentTarget({ onChange, currentTarget }) {
   const providers = getIdentityProviders()
   const [selectModalOpen, setSelectModalOpen] = useState(false)
   const toggleSelectModal = () => setSelectModalOpen(!selectModalOpen)
+
+  const getRandomName = () => {
+    const randomNames = [
+      "John Doe",
+      "Jamie Legg",
+      "Jane Doe",
+      "John Smith",
+      "Jane Smith",
+      "Jamie Smith",
+      "John Legg",
+      "Jane Legg",
+    ]
+    return randomNames[Math.floor(Math.random() * randomNames.length)]
+  }
+
+
+  const randomName = getRandomName()
 
   return (
     <div className="pb-16 space-y-6">
@@ -84,11 +100,10 @@ export default function CurrentTarget({ onChange, currentTarget }) {
           <div>
             <h2 className="text-3xl uppercase title font-medium text-gray-900 dark:text-white">
               <span className="sr-only">Details for </span>
-              {infoEnabled ? target.name ? target.name : getRandomName() : "##### ####"}
+              {infoEnabled ? target.name ? target.name : randomName : "##### ####"}
             </h2>
             {target.username ? <p className="text-sm font-medium code text-gray-500 title">{infoEnabled ? target.username : "######"} | <LinkIcon className="inline-block h-3 w-3 text-gray-500"></LinkIcon></p> :
             <span onClick={() => setSelectModalOpen(!selectModalOpen)} className="cursor-pointer inline-block h-8 bg-gray-900 text-white code py-1 px-1">ADD A USERNAME</span>}
-            
           </div>
           {inOps ?
             <button

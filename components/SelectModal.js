@@ -52,9 +52,9 @@ export default function SelectModal({ providers, target, open, onClose, onChange
                     <RadioGroup value={target.currentIdentityVector} onChange={onChange}>
                       <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
                       <div className="space-y-4">
-                        {providers ? providers.map(provider => (
+                        {providers ? providers.map((provider, i) => (
                           <RadioGroup.Option
-                            key={providers.id}
+                            key={i}
                             value={provider.surfaceKey}
                             className={({ active }) =>
                               classNames(

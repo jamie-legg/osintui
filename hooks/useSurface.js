@@ -21,36 +21,11 @@ const defaultTarget = {
     vectors: 0,
 }
 
-const randomNames = [
-    "John Smith",
-    "Jane Doe",
-    "Joe Bloggs",
-    "John Doe",
-    "Jane Smith",
-    "Joe Smith",
-    "Jane Bloggs",
-    "Jamie Legg"
-]
 
-let randomName = ""
+
 
 const useSurface = () => {
 
-
-    const getRandomName = () => {
-        if(randomName) {
-            return randomName
-        }
-        else {
-            randomName = randomNames[Math.floor(Math.random() * randomNames.length)]
-            return randomName
-        }
-    }
-
-    const getRandomUsername = () => {
-        const randomName = getRandomName();
-        return "@" + randomName.replace(/\s/g, '_').toLowerCase().concat("_");
-    }
 
     const getIdentityProviders = () => {
         return [
@@ -1706,15 +1681,13 @@ const useSurface = () => {
         ]
 
     return {
-        getRandomName,
         parseUrl,
         getIdentityProviders,
         getOtherVectors,
         getProviderSurfaceVectors,
         getRawResources,
         getDefaultTargetState,
-        getVectorSurfaceMap,
-        getRandomUsername
+        getVectorSurfaceMap
     };
 };
 

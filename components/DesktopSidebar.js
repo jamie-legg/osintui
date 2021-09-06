@@ -6,9 +6,6 @@ import ThemeToggle from "./ThemeToggle"
 
 export default function DesktopSidebar({ onPageChange, navigation, secondaryNavigation, tertiaryNavigation, pageNo, target }) {
   const { theme, setTheme } = useTheme();
-  const operations = useOperation();
-  const currentTarget = operations[0]
-  console.log(currentTarget)
 
   return (
     <div className="hidden md:flex md:flex-shrink-0">
@@ -24,9 +21,9 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
           <div className="flex-grow mt-5 flex flex-col">
             <div className="flex-1 space-y-1">
               {navigation.primary.map((item, i) => (
-                <Link href={item.href} key={item.name}>
+                <Link href={item.href} key={i}>
                   <a
-                    key={item.name}
+                    key={i}
                     onClick={() => {
                       onPageChange(i)
                     }}
@@ -62,8 +59,8 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
             </div>
 
           </div>
-          {navigation.secondary.map((item) => (
-            <Link href={item.href} key={item.name}>
+          {navigation.secondary.map((item, i) => (
+            <Link href={item.href} key={i}>
               <a
                 key={item.name}
                 className={classNames(
@@ -84,8 +81,9 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
               </a>
             </Link>
           ))}
-          {navigation.tertiary.map((item) => (
+          {navigation.tertiary.map((item, i) => (
             <a
+              key={i}
               onClick={() => {
                 removeData()
               }}

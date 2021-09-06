@@ -34,8 +34,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <OperationWrapper>
       <ThemeProvider disableTransitionOnChange attribute="class">
-        <Layout pageNo={pageNo} onPageChange={setPageNo} changeOperations={changeOperations}>
-        <Component {...pageProps} />
+        <Layout pageNo={pageNo} onPageChange={setPageNo}>
+          <Component {...pageProps} />
         </Layout>
       </ThemeProvider>
     </OperationWrapper>

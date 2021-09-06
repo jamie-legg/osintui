@@ -64,9 +64,9 @@ const tabs = [
 
 export default function Layout({ children, changeOperations, footerRef, pageNo, onPageChange, onDataWipe }) {
   
-  const { getIdentityProviders, getRandomUsername } = useSurface();
-  const operations = useOperation();
-  const [target, setTarget] = useState(operations[0])
+  const { getIdentityProviders } = useSurface();
+  const ops = useOperation();
+  const [target, setTarget] = useState(ops[0])
 
   const [nav, setNav] = useState(navigation.primary[pageNo]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -84,8 +84,9 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
   }
 
   useEffect(() => {
-    setTarget(operations[0])
-  }, [operations])
+    setTarget(ops[0])
+    console.log("operations changed");
+  }, [ops])
 
   useEffect(() => {
     //turn current off on each key of navigation
@@ -116,9 +117,9 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
             <span className="sr-only">Open sidebar</span>
             <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
           </button>
-          <span className="border-r-4 border-gray-900 pr-4">{navigation.primary[pageNo].name}</span>
+          <span className="border-r-4 border-gray-900 pr-4">{pageNo === 0? "Identification Vectors" : pageNo === 1? "Research Resources" : "Historical Operations"}</span>
           <span className="hidden xl:block ">&nbsp;
-            <span onClick={() => toggleSelectModal()} className="pl-4 mt-0.5 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">{target.username ? target.username : getRandomUsername()}</span>
+            <span onClick={() => toggleSelectModal()} className="pl-4 mt-0.5 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">{target.username ? target.username : "target_username"}</span>
           </span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 code dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
             +{target.vectors}

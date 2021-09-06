@@ -90,10 +90,10 @@ export default function MobileSidebar({open, navigation, secondaryNavigation, te
                   </div>
 
                   <div className="ml-5 mb-5 mt-auto pt-8 space-y-1 flex title">
-                    {navigation.secondary.map((item) => (
-                      <Link href={item.href} key={item.name}>
+                    {navigation.secondary.map((item, i) => (
+                      <Link href={item.href} key={i}>
                         <a
-                          key={item.name}
+                          key={i}
                           className={classNames(
                             item.current
                               ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
@@ -112,8 +112,9 @@ export default function MobileSidebar({open, navigation, secondaryNavigation, te
                         </a>
                       </Link>
                     ))}
-                    {navigation.tertiary.map((item) => (
+                    {navigation.tertiary.map((item, i) => (
                       <a
+                        key={i}
                         onClick={() => {
                           removeData()
                         }}

@@ -5,27 +5,28 @@ import { useOperation } from "../context/operation";
 import useSurface from "../hooks/useSurface";
 import { classNames } from "../shared/utils";
 
-export default function ProviderNode({clicked, handler, provider, icon = null, index }) {
+export default function ProviderNode({ observer, clicked, handler, provider, icon = null, index }) {
   
-
+  const operations = useOperation();
   const [isClicked, setIsClicked] = useState(clicked);
+  const [target, setTarget] = useState(operations[0])
 
   useEffect(() => {
     setIsClicked(clicked);
-  }, [clicked]);
+    console.log(target);
+    setTarget(operations[0])
+    console.log("effect observer", target);
+  }, []);
 
   const { getProviderSurfaceVectors } = useSurface();
-  const operations = useOperation();
-  const [target, setTarget] = useState(operations[0])
+  
+  
   
   const registerProviderInformation = async event => {
     setIsClicked(true);
     //? we always want the opposite action of current click state
     handler(provider, !isClicked);
     setIsClicked(!isClicked)
-    if(!target.identities[index] || !target.identities[index].username) {
-      setIsClicked(false);
-    }
   }
 
   return (
@@ -44,7 +45,7 @@ export default function ProviderNode({clicked, handler, provider, icon = null, i
       </div>
       <div className="row col-span-2">
         <div className="text-xl title font-medium text-gray-900 dark:text-white text-right">{provider.name}</div>
-        {isClicked? <div className="text-gray-600 code text-sm">{target.identities[index].username ? target.identities[index].username : "<Configuring>"}</div>
+        {isClicked? <div className="text-gray-600 text-right code text-sm">{target.identities[index] && target.identities[index].username ? "@" + target.identities[index].username : "<Configuring>"}</div>
         : <div className="text-sm code font-medium text-gray-600 dark:text-white text-right">@username</div>}
       </div>
       <div className="row col-span-3">

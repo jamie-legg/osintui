@@ -1,11 +1,8 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { CheckIcon } from '@heroicons/react/outline'
-import { useOperationUpdate } from '../context/operation'
 
 export default function ModalDialog({ provider, open, onClose, onSuccess }) {
-  const { add} = useOperationUpdate()
   const [isOpen, setOpen] = useState(open)
   const [inputState, setInputState] = useState("")
 
@@ -22,7 +19,7 @@ export default function ModalDialog({ provider, open, onClose, onSuccess }) {
   const updateTarget = (e) => {
     e.preventDefault()
     setOpen(false)
-    onSuccess(provider.surfaceKey, inputState)
+    onSuccess(inputState, provider.surfaceKey)
   }
 
   return (

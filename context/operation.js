@@ -5,8 +5,9 @@ const OperationContext = createContext();
 const OperationUpdateContext = createContext();
 
 export function OperationWrapper({ children }) {
-  const { getDefaultTargetState, getVectorSurfaceMap } = useSurface();
+  const { getDefaultTargetState, getVectorSurfaceMap, getIdentityProviders } = useSurface();
   const vectorMap = getVectorSurfaceMap();
+  const providers = getIdentityProviders();
   let sharedState = getDefaultTargetState();
 
   const updateFns = {
@@ -41,14 +42,16 @@ export function OperationWrapper({ children }) {
       });
       return currentTarget
     },
-    addIdentityToTarget: (provider, identity ) => {
+    addIdentityToTarget: (identity, provider ) => {
       const currentTarget = sharedState[0];
       console.log('addIdentityToTarget', identity, provider);
       const { surface } = vectorMap.find(s => s.key === provider);
-      currentTarget.identities.push({
-        platform: provider.surfaceKey,
-        username: identity.username
-      })
+      // get index of provider from identity providers
+      const providerIndex = providers.findIndex(p => p.surfaceKey === provider);
+      currentTarget.identities[providerIndex] = {
+        platform: provider,
+        username: identity
+      };
       surface.forEach(s => {
         const targetSurface = currentTarget.availableVectors.find(as => as.key === s);
         if (targetSurface) {
@@ -60,11 +63,12 @@ export function OperationWrapper({ children }) {
             });
         }
     });
+      console.log('addIdentityToTarget', currentTarget);
     },
     removeIdentityFromTarget: (provider) => {
       const target = sharedState[0];
-      const identity = target.identities.find(i => i.platform === provider.surfaceKey);
-      const { surface } = vectorMap.find(s => s.key === provider.surfaceKey);
+      const identity = target.identities.find(i => i.platform === provider);
+      const { surface } = vectorMap.find(s => s.key === provider);
       target.identities.splice(target.identities.indexOf(identity), 1);
       surface.forEach(s => {
           const targetSurface = target.availableVectors.find(as => as.key === s);
@@ -76,6 +80,7 @@ export function OperationWrapper({ children }) {
           }
       });
     }
+    
   };
 
   return (
