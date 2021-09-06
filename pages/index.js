@@ -40,25 +40,29 @@ function classNames(...classes) {
 export default function Home() {
   const operations = useOperation();
   const [selectedProvider, setSelectedProvider] = useState(null);
-  const [operation, setOperation] = useState(operations[0]);
+  const [target, setTarget] = useState(operations[0]);
   const [modalOpen, setModalOpen] = useState(false);
 
 
-  const { getIdentityProviders, getOtherSurfaces } = useSurface();
+  const { getIdentityProviders, getOtherVectors } = useSurface();
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
-  const { addSurfaceToTarget, removeSurfaceFromTarget } = useOperationUpdate();
+  const { addIdentityToTarget, removeIdentityFromTarget } = useOperationUpdate();
 
-  const addProviderToOperation = (provider, add=true) => {
-    toggleModal();
+  const TargetIdentityHandler = (provider, add=false, identity={}, ) => {
     setSelectedProvider(provider);
     if(!add) {
-      removeSurfaceFromTarget(provider)
+      removeIdentityFromTarget(provider)
     } else {
-      addSurfaceToTarget(provider)
+      toggleModal();
     }
   }
+
+  const providerSuccess = (identity, provider) => addIdentityToTarget(identity, provider);
+  const providerFail = (provider) => removeIdentityFromTarget(provider);
+    
+  
 
 
   return (
@@ -69,7 +73,7 @@ export default function Home() {
       </Head>
 
           <main className="flex-1 overflow-y-auto">
-            <ModalDialog onSuccess={() => addProviderToOperation(selectedProvider)} provider={selectedProvider} open={modalOpen} onClose={toggleModal} />
+            <ModalDialog onSuccess={providerSuccess} provider={selectedProvider} open={modalOpen} onClose={toggleModal} />
             <div className="pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
 
@@ -82,14 +86,14 @@ export default function Home() {
                   role="list"
                   className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-3xl:gap-x-8"
                 >
-                  {getIdentityProviders().map((provider) => (
-                    <ProviderNode handler={addProviderToOperation} provider={provider} key={provider.id} />
+                  {getIdentityProviders().map((provider, i) => (
+                    <ProviderNode clicked={target.identities[i] && target.identities[i].username} handler={TargetIdentityHandler} provider={provider} key={provider.id} index={i} />
                   ))}
                   <div className="w-full block col-span-2 xl:col-span-3 2xl:col-span-5">
                 <span className="title text-2xl uppercase">Implicit Providers</span>
                   </div>
-                    {getOtherSurfaces().map((provider) => (
-                      <ProviderNode handler={addProviderToOperation} provider={provider} icon={provider.icon} key={provider.id} />
+                    {getOtherVectors().map((provider, i) => (
+                      <ProviderNode handler={TargetIdentityHandler} provider={provider} icon={provider.icon} key={provider.id} index={i} />
                   ))}
                 </ul>
               </section>

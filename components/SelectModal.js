@@ -72,7 +72,7 @@ export default function SelectModal({ providers, target, open, onClose, onChange
                                         <title>{provider.name}</title>
                                         <path fill="currentColor" d={provider.iconPath} />
                                       </svg>
-                                      <h3>
+                                      <h3 className="inline-block title text-2xl">
                                         {provider.name}
                                       </h3>
 
@@ -84,6 +84,12 @@ export default function SelectModal({ providers, target, open, onClose, onChange
                                     </RadioGroup.Description>
                                   </div>
                                 </div>
+                                <form onSubmit={(e) => {
+                                e.preventDefault()
+                                updateTarget()}
+                              }>
+
+                              </form>
                                 <div
                                   className={classNames(
                                     checked ? 'border-gray-900' : 'border-transparent',
@@ -97,6 +103,7 @@ export default function SelectModal({ providers, target, open, onClose, onChange
                         )) : null}
                       </div>
                     </RadioGroup>
+                    
 
                   </div>
                 </div>

@@ -5,35 +5,35 @@ const OperationContext = createContext();
 const OperationUpdateContext = createContext();
 
 export function OperationWrapper({ children }) {
-  const { getDefaultTargetState, getSurfaceMap } = useSurface();
-  const surfaceMap = getSurfaceMap();
+  const { getDefaultTargetState, getVectorSurfaceMap } = useSurface();
+  const vectorMap = getVectorSurfaceMap();
   let sharedState = getDefaultTargetState();
 
   const updateFns = {
+
     removeSurfaceFromTarget: (provider) => {
       const target = sharedState[0];
-        const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
+        const { surface } = vectorMap.find(s => s.key === provider.surfaceKey);
         surface.forEach(s => {
-            const targetSurface = target.availableSurfaces.find(as => as.key === s);
+            const targetSurface = target.availableVectors.find(as => as.key === s);
             if (targetSurface) {
                 targetSurface.priority -= 1;
                 if (targetSurface.priority === 0) {
-                    target.availableSurfaces.splice(target.availableSurfaces.indexOf(targetSurface), 1);
+                    target.availableVectors.splice(target.availableVectors.indexOf(targetSurface), 1);
                 }
             }
         });
     },
     addSurfaceToTarget : (provider) => {
       const currentTarget = sharedState[0];
-      //get surface from surfaceMap
-      const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
+      const { surface } = vectorMap.find(s => s.key === provider.surfaceKey);
       // check if surface is already on target
       surface.forEach(s => {
-          const targetSurface = currentTarget.availableSurfaces.find(as => as.key === s);
+          const targetSurface = currentTarget.availableVectors.find(as => as.key === s);
           if (targetSurface) {
               targetSurface.priority += 1;
           } else {
-              currentTarget.availableSurfaces.push({
+              currentTarget.availableVectors.push({
                   key: s,
                   priority: 1
               });
@@ -41,7 +41,41 @@ export function OperationWrapper({ children }) {
       });
       return currentTarget
     },
-    // if we need to modify the missions, register those functions here
+    addIdentityToTarget: (provider, identity ) => {
+      const currentTarget = sharedState[0];
+      console.log('addIdentityToTarget', identity, provider);
+      const { surface } = vectorMap.find(s => s.key === provider);
+      currentTarget.identities.push({
+        platform: provider.surfaceKey,
+        username: identity.username
+      })
+      surface.forEach(s => {
+        const targetSurface = currentTarget.availableVectors.find(as => as.key === s);
+        if (targetSurface) {
+            targetSurface.priority += 1;
+        } else {
+            currentTarget.availableVectors.push({
+                key: s,
+                priority: 1
+            });
+        }
+    });
+    },
+    removeIdentityFromTarget: (provider) => {
+      const target = sharedState[0];
+      const identity = target.identities.find(i => i.platform === provider.surfaceKey);
+      const { surface } = vectorMap.find(s => s.key === provider.surfaceKey);
+      target.identities.splice(target.identities.indexOf(identity), 1);
+      surface.forEach(s => {
+          const targetSurface = target.availableVectors.find(as => as.key === s);
+          if (targetSurface) {
+              targetSurface.priority -= 1;
+              if (targetSurface.priority === 0) {
+                  target.availableVectors.splice(target.availableVectors.indexOf(targetSurface), 1);
+              }
+          }
+      });
+    }
   };
 
   return (

@@ -1,18 +1,56 @@
 import { AtSymbolIcon, GlobeAltIcon, InboxIcon, InboxInIcon, PhotographIcon, ShoppingBagIcon } from "@heroicons/react/outline";
 
 const defaultTarget = {
-    name: 'John Smith',
-    username: '@john_smith_',
+    name: '',
+    username: '',
     profilePicUrl: "",
-    identities: [],
-    availableSurfaces: [],
+    identities: [
+        {
+            platform: "",
+            username: ""
+        },
+    ],
+    vectors: [
+        {
+            key: "",
+            data: []
+        }
+    ],
+    availableVectors: [],
     currentIdentityVector: "tiktok",
     vectors: 0,
 }
 
+const randomNames = [
+    "John Smith",
+    "Jane Doe",
+    "Joe Bloggs",
+    "John Doe",
+    "Jane Smith",
+    "Joe Smith",
+    "Jane Bloggs",
+    "Jamie Legg"
+]
+
+let randomName = ""
+
 const useSurface = () => {
 
-    let currentTarget = defaultTarget;
+
+    const getRandomName = () => {
+        if(randomName) {
+            return randomName
+        }
+        else {
+            randomName = randomNames[Math.floor(Math.random() * randomNames.length)]
+            return randomName
+        }
+    }
+
+    const getRandomUsername = () => {
+        const randomName = getRandomName();
+        return "@" + randomName.replace(/\s/g, '_').toLowerCase().concat("_");
+    }
 
     const getIdentityProviders = () => {
         return [
@@ -29,7 +67,7 @@ const useSurface = () => {
     };
     
 
-    const getOtherSurfaces = () => {
+    const getOtherVectors = () => {
         return [{ name: 'Web', surfaceKey: [], icon:GlobeAltIcon },
         { name: 'Username', surfaceKey: [], icon:AtSymbolIcon },
         { name: 'Image', surfaceKey: [], icon:PhotographIcon },
@@ -43,8 +81,8 @@ const useSurface = () => {
         return [defaultTarget];
     };
 
-    const getProviderSurfaces = (provider) => {
-        const smi = surfaceMap.find(s => s.key === provider.surfaceKey)
+    const getProviderSurfaceVectors = (provider) => {
+        const smi = vectorSurfaceMap.find(v => v.key === provider.surfaceKey)
         return smi? smi.surface : [];
     };
 
@@ -62,8 +100,8 @@ const useSurface = () => {
         return raw_resources
     }
 
-    const getSurfaceMap = () => {
-        return surfaceMap
+    const getVectorSurfaceMap = () => {
+        return vectorSurfaceMap
     }
 
     //! ITS ALL DATA FROM HERE ON OUT
@@ -71,7 +109,7 @@ const useSurface = () => {
     //? SURFACE MAP WITH UNIQUE KEYS
     //? RESOURCES WITH TAGS
     
-    const surfaceMap = [
+    const vectorSurfaceMap = [
             {
                 key:"dwm",
                 name:"DWM",
@@ -1668,13 +1706,15 @@ const useSurface = () => {
         ]
 
     return {
+        getRandomName,
         parseUrl,
         getIdentityProviders,
-        getOtherSurfaces,
-        getProviderSurfaces,
+        getOtherVectors,
+        getProviderSurfaceVectors,
         getRawResources,
         getDefaultTargetState,
-        getSurfaceMap
+        getVectorSurfaceMap,
+        getRandomUsername
     };
 };
 
