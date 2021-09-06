@@ -157,7 +157,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
               </Transition.Child>
               <div className="flex-shrink-0 px-4 flex items-center">
                 
-                {theme ==="dark"? <img className="w-24 h-24" src="/lighticon.png"></img> : <img className="w-24 h-24" src="/darkicon.png"></img>}
+                {theme ==="dark"? <img className="w-24 h-24" src="/osintuiwhite.png"></img> : <img className="w-24 h-24" src="/osintuigray.png"></img>}
                 <p className="title text-4xl">OSINTUI<span className="header text-xs">BETA</span></p>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
@@ -255,7 +255,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <nav className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
             <div className="flex-shrink-0 px-4 flex items-center">
-            {theme ==="dark"? <img className="w-16 h-16" src="/darkicon.png"></img> : <img className="w-16 h-16" src="/lighticon.png"></img>}
+            {theme ==="dark"? <img className="w-16 h-16" src="/osintuigray.png"></img> : <img className="w-16 h-16" src="/osintuiwhite.png"></img>}
                   <p className="title text-5xl px-2">
                       OSINTUI
                   </p>
