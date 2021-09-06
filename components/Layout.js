@@ -29,6 +29,7 @@ import { classNames } from '../shared/utils'
 import useSurface from '../hooks/useSurface'
 import CurrentTarget from './CurrentTarget'
 import { useOperation } from '../context/operation'
+import SelectModal from './SelectModal'
 
 const navigation = [
   { name: 'Identities', href: '/', icon: IdentificationIcon, current: false },
@@ -38,11 +39,14 @@ const navigation = [
 const secondaryNavigation = [
   { name: 'Source Code', href: 'https://github.com/jamie-legg/osintui', icon: CodeIcon },
   { name: 'Support OSINTUI', href: 'https://www.buymeacoffee.com/osintjamie', icon: HeartIcon },
-  { name: 'Community', href: 'https://discord.gg/osintui', icon: FireIcon },
+  { name: 'Community', href: 'https://discord.gg/HVUdnuCqwV', icon: FireIcon },
 ]
 const tertiaryNavigation = [
   { name: 'Reset', icon: EyeOffIcon },
 ]
+
+
+//! FOR A USER BASED FUTURE
 
 const tabs = [
   { name: 'General', href: '#', current: true },
@@ -55,22 +59,34 @@ const tabs = [
 
 
 export default function Layout({ children, changeOperations, footerRef, pageNo, onPageChange, onDataWipe }) {
+  const { getIdentityProviders } = useSurface();
+  const operations = useOperation();
+  const [target, setTarget] = useState(operations[0])
+  const { theme, setTheme } = useTheme();
+  const [ nav, setNav ] = useState(navigation[pageNo]);
+  const [ sidebarOpen, setSidebarOpen ] = useState(false);
+  const [ darkMode, setDarkMode ] = useState(true);
+  const [ selectModalOpen, setSelectModalOpen ] = useState(false);
+  const [ targetModalOpen, setTargetModalOpen] = useState(false);
 
   const removeData = () => {
     onDataWipe()
   }
-  
-  
-  const {theme, setTheme} = useTheme()
-  const [darkMode, setDarkMode] = useState(true)
-  const [nav, setNav] = useState(navigation[pageNo])
-  
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [ targetModalOpen, setTargetModalOpen] = useState(false)
 
-  const operations = useOperation();
+  const openSelectModal = () => {
+    setSelectModalOpen(true)
+  }
   
-  const [target, setTarget] = useState(operations[0])
+  
+  const providers = getIdentityProviders();
+
+  
+  
+  
+
+  
+  
+
 
   
   useEffect(() => {
@@ -340,7 +356,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
       {/* Content area */}
       <div className="flex-1 flex flex-col dark:bg-gray-900">
-        
+        <SelectModal onChange={setTarget} open={selectModalOpen} providers={providers} target={target} onClose={setSelectModalOpen}></SelectModal>
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
         <button
               type="button"
@@ -352,7 +368,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
             </button>
           <span className="border-r-4 border-gray-900 pr-4">{navigation[pageNo].name}</span>
           <span className="hidden xl:block ">&nbsp;
-            <span className="pl-4 code text-xl py-2 hover:bg-gray-900 hover:text-white cursor-pointer">{target.username}</span>
+            <span onClick={() => openSelectModal()} className="pl-4 code text-xl py-2 hover:bg-gray-900 hover:text-white cursor-pointer">{target.username}</span>
           </span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
             +{target.vectors}
