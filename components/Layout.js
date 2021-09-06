@@ -103,6 +103,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
 
 
+
   return (
     <div className="relative h-screen overflow-hidden flex">
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -385,7 +386,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
             {children}
             {/* Current target sidebar */}
             <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 border-l border-gray-200 overflow-y-auto lg:block">
-              <CurrentTarget operation={target} />
+              <CurrentTarget currentTarget={target} />
             </aside>
 
           </div>

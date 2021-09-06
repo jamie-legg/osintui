@@ -16,7 +16,8 @@ export default function ProviderNode({ handler, provider, icon = null }) {
   return (
     <div 
     onClick={registerProviderInformation}
-    key={provider.name} className="cursor-pointer group grid grid-cols-3 h-48 w-48 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl p-3">
+    key={provider.name} 
+    className={classNames(clicked ? "border-gray-900 border-solid dark:border-white" : "border-dashed","cursor-pointer group grid grid-cols-3 h-48 w-48 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl p-3")}>
       <div className={"row col-span-1"}>
         {icon ? <provider.icon className="h-10 mx-auto my-auto w-10" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" />
             :

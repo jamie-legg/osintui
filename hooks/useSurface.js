@@ -38,39 +38,6 @@ const useSurface = () => {
         ]
     };
 
-    const addSurfaceToTarget = (provider) => {
-        //get surface from surfaceMap
-        const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
-        // check if surface is already on target
-        surface.forEach(s => {
-            const targetSurface = currentTarget.availableSurfaces.find(as => as.key === s);
-            if (targetSurface) {
-                targetSurface.priority += 1;
-            } else {
-                currentTarget.availableSurfaces.push({
-                    key: s,
-                    priority: 1
-                });
-            }
-        });
-        return currentTarget
-    };
-
-    const removeSurfaceFromTarget = (provider, target) => {
-        // find the relevant surfaces on the target and lower their priority, if priority is 0 remove
-        const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
-        surface.forEach(s => {
-            const targetSurface = target.availableSurfaces.find(as => as.key === s);
-            if (targetSurface) {
-                targetSurface.priority -= 1;
-                if (targetSurface.priority === 0) {
-                    target.availableSurfaces.splice(target.availableSurfaces.indexOf(targetSurface), 1);
-                }
-            }
-        });
-        return currentTarget
-    };
-
 
     const getDefaultTargetState = () => {
         return [defaultTarget];
@@ -93,6 +60,10 @@ const useSurface = () => {
     
     const getRawResources = () => {
         return raw_resources
+    }
+
+    const getSurfaceMap = () => {
+        return surfaceMap
     }
 
     //! ITS ALL DATA FROM HERE ON OUT
@@ -1700,11 +1671,10 @@ const useSurface = () => {
         parseUrl,
         getIdentityProviders,
         getOtherSurfaces,
-        addSurfaceToTarget,
-        removeSurfaceFromTarget,
         getProviderSurfaces,
         getRawResources,
-        getDefaultTargetState
+        getDefaultTargetState,
+        getSurfaceMap
     };
 };
 

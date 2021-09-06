@@ -26,7 +26,7 @@ import {
 import CurrentTarget from '../components/CurrentTarget'
 import useSurface from '../hooks/useSurface'
 import ProviderNode from '../components/ProviderNode'
-import { useOperation } from '../context/operation'
+import { useOperation, useOperationUpdate } from '../context/operation'
 import ModalDialog from '../components/ModalDialog'
 
 
@@ -43,16 +43,20 @@ export default function Home() {
   const [operation, setOperation] = useState(operations[0]);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const { getIdentityProviders, getOtherSurfaces, addSurfaceToTarget, removeSurfaceFromTarget } = useSurface();
+
+  const { getIdentityProviders, getOtherSurfaces } = useSurface();
 
   const toggleModal = () => setModalOpen(!modalOpen);
+
+  const { addSurfaceToTarget, removeSurfaceFromTarget } = useOperationUpdate();
+
   const addProviderToOperation = (provider, add=true) => {
+    toggleModal();
     setSelectedProvider(provider);
     if(!add) {
-      setOperation(removeSurfaceFromTarget(provider, operation))
+      removeSurfaceFromTarget(provider)
     } else {
-      setModalOpen(true);
-      setOperation(addSurfaceToTarget(provider, operation))
+      addSurfaceToTarget(provider)
     }
   }
 
@@ -65,13 +69,13 @@ export default function Home() {
       </Head>
 
           <main className="flex-1 overflow-y-auto">
-            <ModalDialog provider={selectedProvider} open={modalOpen} onClose={toggleModal} />
+            <ModalDialog onSuccess={() => addProviderToOperation(selectedProvider)} provider={selectedProvider} open={modalOpen} onClose={toggleModal} />
             <div className="pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
 
               {/* Gallery */}
               <section className="pb-16" aria-labelledby="identification-gallery">
-                <p className="cursor-pointer hover:text-gray-900 mb-5 text-gray-500 dark:text-gray-300">
+                <p className="mb-5 text-gray-500 dark:text-gray-300">
                   <LightningBoltIcon className={`inline-block h-5 w-5 mb-1 mr-5 text-yellow-400`} />
                   Configure your initial identification vectors here in order to calculate and populate your attack surface.</p>
                 <ul

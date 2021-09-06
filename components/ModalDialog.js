@@ -3,8 +3,9 @@ import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { CheckIcon } from '@heroicons/react/outline'
 
-export default function ModalDialog({ provider, open, onClose }) {
+export default function ModalDialog({ provider, open, onClose, onSuccess }) {
   const [isOpen, setOpen] = useState(open)
+  const [inputState, setInputState] = useState("")
 
   useEffect(() => {
     setOpen(open)
@@ -13,6 +14,11 @@ export default function ModalDialog({ provider, open, onClose }) {
   const closeModal = () => {
     setOpen(false)
     onClose()
+  }
+
+  const updateTarget = () => {
+    setOpen(false)
+    onSuccess()
   }
 
   return (
@@ -35,6 +41,7 @@ export default function ModalDialog({ provider, open, onClose }) {
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
             &#8203;
           </span>
+          
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -74,10 +81,19 @@ export default function ModalDialog({ provider, open, onClose }) {
                   </div>
                 </div>
               </div>
+              <form onSubmit={(e) => {
+                e.preventDefault()
+                updateTarget()}
+              }>
               <div className="mt-3 text-center sm:mt-5">
-                <input placeholder={" @username"} className="p-2 rounded-none border-gray-900 focus:border-gray-900 w-full code">
+                <input onChange={
+                  (e) => {
+                    setInputState(e.target.value)
+                  }
+                } placeholder={" @username"} className="p-2 rounded-none border-gray-900 focus:border-gray-900 w-full code">
                 </input>
               </div>
+              </form>
               <div className="mt-5 sm:mt-6 flex gap-x-2">
               <button
                   type="button"
@@ -87,9 +103,12 @@ export default function ModalDialog({ provider, open, onClose }) {
                   CANCEL
                 </button>
                 <button
-                  type="button"
+                  type="submit"
                   className="inline-flex justify-center w-48 border border-transparent shadow-sm px-4 py-2 bg-gray-900 title font-medium text-white"
-                  onClick={() => closeModal()}
+                  onClick={() => {
+                    updateTarget()
+                    closeModal()
+                  }}
                 >
                   ADD
                 </button>
