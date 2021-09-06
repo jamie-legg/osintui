@@ -5,25 +5,23 @@ import { useOperation } from "../context/operation";
 import useSurface from "../hooks/useSurface";
 import { classNames } from "../shared/utils";
 
-export default function ProviderNode({ observer, clicked, handler, provider, icon = null, index }) {
+export default function ProviderNode({ target, handler, provider, icon = null, index }) {
   
-  const operations = useOperation();
-  const [isClicked, setIsClicked] = useState(clicked);
-  const [target, setTarget] = useState(operations[0])
+  const [isClicked, setIsClicked] = useState(target.identities[index] && target.identities[index].username);
+  const [stateTarget, setTarget] = useState(target);
 
-  useEffect(() => {
-    setIsClicked(clicked);
-    setTarget(operations[0])
-  }, []);
 
   const { getProviderSurfaceVectors } = useSurface();
   
   
   
   const registerProviderInformation = async event => {
-    setIsClicked(true);
     //? we always want the opposite action of current click state
     handler(provider, !isClicked);
+    
+    setIsClicked(true);
+    
+    
     setIsClicked(!isClicked)
   }
 
@@ -43,7 +41,7 @@ export default function ProviderNode({ observer, clicked, handler, provider, ico
       </div>
       <div className="row col-span-2">
         <div className="text-xl title font-medium text-gray-900 dark:text-white text-right">{provider.name}</div>
-        {isClicked? <div className="text-gray-600 text-right code text-sm">{target.identities[index] && target.identities[index].username ? "@" + target.identities[index].username : "<Configuring>"}</div>
+        {isClicked? <div className="text-gray-600 text-right code text-sm">{stateTarget.identities[index] && stateTarget.identities[index].username ? "@" + stateTarget.identities[index].username : "<Configuring>"}</div>
         : <div className="text-sm code font-medium text-gray-600 dark:text-white text-right">@username</div>}
       </div>
       <div className="row col-span-3">
@@ -63,8 +61,8 @@ export default function ProviderNode({ observer, clicked, handler, provider, ico
           onChange={registerProviderInformation}
             checked={isClicked}
             className={classNames(
-              isClicked ? 'bg-gray-900 dark:bg-white' : 'bg-white dark:bg-gray-900',
-              'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-none cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:ring-white'
+              isClicked ? 'bg-gray-900 dark:bg-white border-gray-900 border-solid' : 'bg-white dark:bg-gray-900',
+              'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-gray-200 border-dashed rounded-none cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ring-gray-900 dark:ring-white'
             )}
           >
             <span

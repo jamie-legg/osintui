@@ -41,11 +41,8 @@ export default function Home() {
   const operations = useOperation();
   const { getIdentityProviders, getOtherVectors, getDefaultTargetState } = useSurface();
   const [selectedProvider, setSelectedProvider] = useState(null);
-  const [target, setTarget] = useState(getDefaultTargetState()[0]);
+  const [target, setTarget] = useState(operations[0]);
 
-  useEffect(() => {
-    setTarget(operations[0])
-  }, [operations])
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -56,24 +53,24 @@ export default function Home() {
 
   const { addIdentityToTarget, removeIdentityFromTarget } = useOperationUpdate();
 
-  const TargetIdentityHandler = (provider, add=false, identity={}, ) => {
+  const TargetIdentityHandler = (provider, add=false) => {
     setSelectedProvider(provider);
     if(!add) {
-      removeIdentityFromTarget(provider)
+      setTarget(removeIdentityFromTarget(provider))
     } else {
       toggleModal();
     }
   }
 
   const providerSuccess = (identity, provider) => {
-    addIdentityToTarget(identity, provider)
-    setTarget(operations[0])
+    setModalOpen(false);
+    setTarget(addIdentityToTarget(identity, provider))
   };
 
     
   
 
-
+  console.log(target);
   return (
     <>
       <Head>
@@ -96,13 +93,13 @@ export default function Home() {
                   className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-3xl:gap-x-8"
                 >
                   {getIdentityProviders().map((provider, i) => (
-                    <ProviderNode observable={target} clicked={target.identities[i] && target.identities[i].username} handler={TargetIdentityHandler} provider={provider} key={i} index={i} />
+                    <ProviderNode target={target} handler={TargetIdentityHandler} provider={provider} key={i} index={i} />
                   ))}
                   <div className="w-full block col-span-2 xl:col-span-3 2xl:col-span-5">
                 <span className="title text-2xl uppercase">Implicit Providers</span>
                   </div>
                     {getOtherVectors().map((provider, i) => (
-                      <ProviderNode handler={TargetIdentityHandler} provider={provider} icon={provider.icon} key={i} index={i} />
+                      <ProviderNode target={target} handler={TargetIdentityHandler} provider={provider} icon={provider.icon} key={i} index={i} />
                   ))}
                 </ul>
               </section>

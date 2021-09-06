@@ -28,7 +28,7 @@ import { useTheme } from 'next-themes'
 import { classNames } from '../shared/utils'
 import useSurface from '../hooks/useSurface'
 import CurrentTarget from './CurrentTarget'
-import { useOperation } from '../context/operation'
+import { useOperation, useOperationUpdate } from '../context/operation'
 import SelectModal from './SelectModal'
 import DesktopSidebar from './DesktopSidebar'
 import MobileSidebar from './MobileSidebar'
@@ -66,7 +66,11 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
   
   const { getIdentityProviders } = useSurface();
   const ops = useOperation();
+  const { setDefaultProvider } = useOperationUpdate();
   const [target, setTarget] = useState(ops[0])
+  const changeDefaultIdentity = (id) => {
+    setTarget(setDefaultProvider(id))
+  }
 
   const [nav, setNav] = useState(navigation.primary[pageNo]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -83,9 +87,6 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
     setSelectModalOpen(!selectModalOpen)
   }
 
-  useEffect(() => {
-    setTarget(ops[0])
-  }, [ops])
 
   useEffect(() => {
     //turn current off on each key of navigation
@@ -106,7 +107,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
       {/* Content area */}
       <div className="flex-1 flex flex-col dark:bg-gray-900">
-        <SelectModal providers={providers} target={target} open={selectModalOpen} onChange={setTarget} onClose={toggleSelectModal}></SelectModal>
+        <SelectModal providers={providers} target={target} open={selectModalOpen} onClose={toggleSelectModal} onChange={changeDefaultIdentity}></SelectModal>
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
           <button
             type="button"
@@ -121,7 +122,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
             <span onClick={() => toggleSelectModal()} className="pl-4 mt-0.5 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">{target.username ? target.username : "target_username"}</span>
           </span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 code dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
-            +{target.vectors}
+            +{target.availableVectors.length}
           </span>
           <div className="relative ml-10 lg:hidden">
             <EyeIcon onClick={toggleSelectModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />

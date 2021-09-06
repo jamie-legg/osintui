@@ -5,6 +5,7 @@ import { CheckIcon } from '@heroicons/react/outline'
 import { classNames } from '../shared/utils'
 
 export default function SelectModal({ providers, target, open, onClose, onChange }) {
+  console.log('SelectModal', { providers, target, open, onClose, onChange });
   const [isOpen, setOpen] = useState(open)
 
   useEffect(() => {
@@ -46,64 +47,60 @@ export default function SelectModal({ providers, target, open, onClose, onChange
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-y-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+              <div className="inline-block h-10.8425C18 align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-y-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
                 <div>
-                  <div className="mx-1 h-96">
-                    <RadioGroup value={target.currentIdentityVector} onChange={onChange}>
-                      <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
-                      <div className="space-y-4">
-                        {providers ? providers.map((provider, i) => (
-                          <RadioGroup.Option
-                            key={i}
-                            value={provider.surfaceKey}
-                            className={({ active }) =>
-                              classNames(
-                                active ? 'ring-1 ring-offset-2 ring-gray-900' : '',
-                                'relative block rounded-none border border-gray-300 bg-white shadow-sm px-6 py-4 cursor-pointer hover:border-gray-400 sm:flex sm:justify-between focus:outline-none'
-                              )
-                            }
-                          >
-                            {({ checked }) => (
-                              <>
-                                <div className="flex items-center">
-                                  <div className="text-sm">
-                                    <RadioGroup.Label as="p" className="font-medium text-gray-900">
-                                      <svg className={"block h-10 w-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <title>{provider.name}</title>
-                                        <path fill="currentColor" d={provider.iconPath} />
-                                      </svg>
-                                      <h3 className="inline-block title text-2xl">
-                                        {provider.name}
-                                      </h3>
 
-                                    </RadioGroup.Label>
-                                    <RadioGroup.Description as="div" className="text-gray-500">
-                                      <p className="sm:inline">
-                                        {provider.username ? provider.username : 'Not Configured'}
-                                      </p>{' '}
-                                    </RadioGroup.Description>
-                                  </div>
-                                </div>
-                                <form onSubmit={(e) => {
-                                e.preventDefault()
-                                updateTarget()}
-                              }>
+                  <div className="mx-1">
+                    <div className="space-y-4">
+                      {providers ? providers.map((provider, i) => (
+                        <div
+                          key={i}
+                          value={provider.surfaceKey}
+                          className={({ active }) =>
+                            classNames(
+                              target.defaultProviderKey === provider.surfaceKey ? 'ring-1 ring-offset-2 ring-gray-900' : '',
+                              'relative block rounded-none border border-gray-300 bg-white shadow-sm px-6 py-4 cursor-pointer hover:border-gray-400 sm:flex sm:justify-between focus:outline-none'
+                            )
+                          }
+                        >
+                          <div className="flex items-center">
+                            <div className="text-sm">
+                              <div className="font-medium text-gray-900">
+                                <svg className={"block h-10 w-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <title>{provider.name}</title>
+                                  <path fill="currentColor" d={provider.iconPath} />
+                                </svg>
+                                <h3 className="inline-block title text-2xl">
+                                  {provider.name}
+                                </h3>
 
-                              </form>
-                                <div
-                                  className={classNames(
-                                    checked ? 'border-gray-900' : 'border-transparent',
-                                    'absolute -inset-px rounded-none border-2 pointer-events-none'
-                                  )}
-                                  aria-hidden="true"
-                                />
-                              </>
+                              </div>
+                              <div className="text-gray-500">
+                                <p className="sm:inline">
+                                  {provider.username ? provider.username : 'Not Configured'}
+                                </p>{' '}
+                              </div>
+                            </div>
+                          </div>
+                          <form onSubmit={(e) => {
+                            e.preventDefault()
+                            updateTarget()
+                          }
+                          }>
+                            <input placeholder={provider.username ? provider.username : 'username'} className="border-b-4 border-gray-900 w-48"></input>
+                          </form>
+                          <div
+                            className={classNames(
+                              target.defaultProviderKey === provider.surfaceKey ? 'border-gray-900' : 'border-transparent',
+                              'absolute -inset-px rounded-none border-2 pointer-events-none'
                             )}
-                          </RadioGroup.Option>
-                        )) : null}
-                      </div>
-                    </RadioGroup>
-                    
+                            aria-hidden="true"
+                          />
+                        </div>
+                      )) : null}
+
+                    </div>
+
 
                   </div>
                 </div>
