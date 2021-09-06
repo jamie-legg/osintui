@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 
 export default function Operations() {
     return(
-        <Layout pageNo={2}>
+        <div pageNo={2}>
                   <Head>
         <title>Operations / OSINTUI</title>
         <link rel="icon" href="/favicon.ico" />
@@ -11,6 +11,6 @@ export default function Operations() {
             <h1>Operations</h1>
             <p>
         </p>
-        </Layout>
+        </div>
     )
 }

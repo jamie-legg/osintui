@@ -11,6 +11,7 @@ import {
   DocumentSearchIcon,
   DownloadIcon,
   EyeIcon,
+  EyeOffIcon,
   FireIcon,
   HomeIcon,
   IdentificationIcon,
@@ -27,6 +28,7 @@ import { useTheme } from 'next-themes'
 import { classNames } from '../shared/utils'
 import useSurface from '../hooks/useSurface'
 import CurrentTarget from './CurrentTarget'
+import { useOperation } from '../context/operation'
 
 const navigation = [
   { name: 'Identities', href: '/', icon: IdentificationIcon, current: false },
@@ -35,9 +37,13 @@ const navigation = [
 ]
 const secondaryNavigation = [
   { name: 'Source Code', href: 'https://github.com/jamie-legg/osintui', icon: CodeIcon },
-  { name: 'Support OSINT', href: 'https://www.buymeacoffee.com/osintjamie', icon: HeartIcon },
+  { name: 'Support OSINTUI', href: 'https://www.buymeacoffee.com/osintjamie', icon: HeartIcon },
   { name: 'Community', href: 'https://discord.gg/osintui', icon: FireIcon },
 ]
+const tertiaryNavigation = [
+  { name: 'Reset', icon: EyeOffIcon },
+]
+
 const tabs = [
   { name: 'General', href: '#', current: true },
   { name: 'Password', href: '#', current: false },
@@ -48,7 +54,11 @@ const tabs = [
 ]
 
 
-export default function Layout({ children, storeOperations, footerRef, pageNo }) {
+export default function Layout({ children, changeOperations, footerRef, pageNo, onPageChange, onDataWipe }) {
+
+  const removeData = () => {
+    onDataWipe()
+  }
   
   
   const {theme, setTheme} = useTheme()
@@ -57,8 +67,10 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
   
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [ targetModalOpen, setTargetModalOpen] = useState(false)
-  const { getCurrentTarget } = useSurface();
-  const [target, setTarget] = useState(getCurrentTarget())
+
+  const operations = useOperation();
+  
+  const [target, setTarget] = useState(operations[0])
 
   
   useEffect(() => {
@@ -128,14 +140,19 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                 </div>
               </Transition.Child>
               <div className="flex-shrink-0 px-4 flex items-center">
-                <p className="title text-4xl">OSINTUI<span className="header">BETA</span></p>
+                
+                {theme ==="dark"? <img className="w-24 h-24" src="/lighticon.png"></img> : <img className="w-24 h-24" src="/darkicon.png"></img>}
+                <p className="title text-4xl">OSINTUI<span className="header text-xs">BETA</span></p>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="h-full flex flex-col">
                   <div className="space-y-1">
-                    {navigation.map((item) => (
+                    {navigation.map((item, i) => (
+                      <Link href={item.href} key={i}>
                       <a
-                        href={item.href}
+                        onClick={() => {
+                          onPageChange(i)
+                        }}
                         className={classNames(
                           item.current
                             ? 'bg-gray-200 border-gray-600 text-gray-800'
@@ -153,10 +170,11 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                         />
                         {item.name}
                       </a>
+                      </Link>
                     ))}
                   </div>
                   
-                  <div className="ml-5 mb-5 mt-auto pt-8 space-y-1 flex">
+                  <div className="ml-5 mb-5 mt-auto pt-8 space-y-1 flex title">
                       {secondaryNavigation.map((item) => (
                   <Link href={item.href} key={item.name}>
                   <a
@@ -179,6 +197,28 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                   </a>
                   </Link>
                 ))}
+                {tertiaryNavigation.map((item) => (
+                  <a
+                    onClick={() => {
+                      removeData()
+                    }}
+                    className={classNames(
+                      item.current
+                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
+                      'group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium'
+                    )}
+                  >
+                    <item.icon
+                      className={classNames(
+                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                        'mr-3 flex-shrink-0 h-6 w-6'
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </a>
+                ))}
                     <ThemeToggle callback={toggleTheme}></ThemeToggle>
                     <p className="ml-5 header">Dark Mode</p>
                   </div>
@@ -199,23 +239,25 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <nav className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
             <div className="flex-shrink-0 px-4 flex items-center">
-              <div className="flex-shrink-0">
-                  <p className="title text-3xl">
-                      OSINTUI<span className="header">BETA</span>
+            {theme ==="dark"? <img className="w-16 h-16" src="/darkicon.png"></img> : <img className="w-16 h-16" src="/lighticon.png"></img>}
+                  <p className="title text-5xl px-2">
+                      OSINTUI
                   </p>
-              </div>
             </div>
             <div className="flex-grow mt-5 flex flex-col">
               <div className="flex-1 space-y-1">
-                {navigation.map((item) => (
+                {navigation.map((item, i) => (
                   <Link href={item.href} key={item.name}>
                   <a
                     key={item.name}
+                    onClick={() => {
+                      onPageChange(i)
+                    }}
                     className={classNames(
                       item.current
                         ? 'bg-gray-100 dark:bg-white dark:text-gray-900 border-gray-800 dark:border-gray-50 text-gray-800'
                         : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
-                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
+                      'title group border-l-4 py-2 px-3 flex items-center text-xl font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
                     )}
                   >
                     <item.icon
@@ -233,9 +275,9 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
               : pageNo === 1? <div className="text-gray-900 title px-2 py-2 uppercase w-full text-center">RESOURCE TAG FILTER
               <div className="text-left w-full title">SEARCH TAGS</div>
               <div className="w-full">
-                {target.availableSurfaces.map((item) => (
+                {target.availableSurfaces ? target.availableSurfaces.map((item) => (
                   <div className="inline-block items-center justify-between px-2 py-2 bg-gray-900">{item.name}</div>
-                ))}
+                )):null}
               </div>
               <div className="text-left w-full title">SUGGESTED VECTORS</div>
               </div> :
@@ -250,8 +292,8 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                     className={classNames(
                       item.current
                         ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
-                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 header',
-                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium uppercase'
+                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xl',
+                      'group border-l-4 py-2 px-3 flex items-center text-sm font-medium'
                     )}
                   >
                     <item.icon
@@ -265,10 +307,32 @@ export default function Layout({ children, storeOperations, footerRef, pageNo })
                   </a>
                   </Link>
                 ))}
-            <div className="ml-2 flex w-full">
+                {tertiaryNavigation.map((item) => (
+                  <a
+                    onClick={() => {
+                      removeData()
+                    }}
+                    className={classNames(
+                      item.current
+                        ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
+                        : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
+                      'group cursor-pointer border-l-4 py-2 px-3 flex items-center text-sm font-medium'
+                    )}
+                  >
+                    <item.icon
+                      className={classNames(
+                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                        'mr-3 flex-shrink-0 h-6 w-6'
+                      )}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </a>
+                ))}
+            <div className="ml-2 flex w-full text-gray-600 hover:text-gray-900 hover:bg-gray-50">
                   
               <ThemeToggle callback={toggleTheme}></ThemeToggle>
-                <p className="ml-5 header">Dark Mode</p>
+                <p className="ml-5 text-sm font-medium text-gray-600">Dark Mode</p>
             </div>
           </nav>
         </div>

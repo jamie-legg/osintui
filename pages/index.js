@@ -26,6 +26,7 @@ import {
 import CurrentTarget from '../components/CurrentTarget'
 import useSurface from '../hooks/useSurface'
 import ProviderNode from '../components/ProviderNode'
+import { useOperation } from '../context/operation'
 
 
 
@@ -36,42 +37,19 @@ function classNames(...classes) {
 
 
 export default function Home() {
-  const { getItem } = useStorage();
-  const { getIdentityProviders, getOtherSurfaces, getDefaultTarget, addSurfaceToTarget, removeSurfaceFromTarget } = useSurface();
-  const [currentOperation, setCurrentOperation] = useState(getDefaultTarget());
+  const operations = useOperation();
+  const [operation, setOperation] = useState(operations[0]);
 
-  const storeOperations = (value) => {
-    getItem('operations', (error, data) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      if (data === null) {
-        setItem('operations', value);
-        setCurrentOperation(value);
-      }
-    });
-  };
+  const { getIdentityProviders, getOtherSurfaces, addSurfaceToTarget, removeSurfaceFromTarget } = useSurface();
 
   const addProviderToOperation = (provider, add=true) => {
     if(!add) {
-      setCurrentOperation(removeSurfaceFromTarget(provider))
+      setOperation(removeSurfaceFromTarget(provider, operation))
     } else {
-    setCurrentOperation(addSurfaceToTarget(provider))
+      setOperation(addSurfaceToTarget(provider, operation))
     }
   }
 
-  useEffect(() => {
-    const defaultTarget = getDefaultTarget();
-    const storedOperations = getItem('operations');
-    if(storedOperations) {
-      setCurrentOperation(storedOperations)
-    } else {
-      setCurrentOperation(defaultTarget)
-    }
-  }, [])
-
-  console.log(currentOperation)
 
   return (
     <div>
@@ -81,8 +59,6 @@ export default function Home() {
       </Head>
 
       <div>
-        <Layout operationHandler={storeOperations} pageNo={0}>
-
           <main className="flex-1 overflow-y-auto">
             <div className="pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -109,8 +85,6 @@ export default function Home() {
               </section>
             </div>
           </main>
-
-        </Layout>
       </div>
 
 

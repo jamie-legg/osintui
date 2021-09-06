@@ -55,32 +55,29 @@ const useSurface = () => {
         return currentTarget
     };
 
-    const removeSurfaceFromTarget = (provider) => {
+    const removeSurfaceFromTarget = (provider, target) => {
         // find the relevant surfaces on the target and lower their priority, if priority is 0 remove
         const { surface } = surfaceMap.find(s => s.key === provider.surfaceKey);
         surface.forEach(s => {
-            const targetSurface = currentTarget.availableSurfaces.find(as => as.key === s);
+            const targetSurface = target.availableSurfaces.find(as => as.key === s);
             if (targetSurface) {
                 targetSurface.priority -= 1;
                 if (targetSurface.priority === 0) {
-                    currentTarget.availableSurfaces.splice(currentTarget.availableSurfaces.indexOf(targetSurface), 1);
+                    target.availableSurfaces.splice(target.availableSurfaces.indexOf(targetSurface), 1);
                 }
             }
         });
         return currentTarget
     };
 
-    const getCurrentTarget = () => {
-        return currentTarget;
-    };
 
-    const getDefaultTarget = () => {
-        return defaultTarget;
+    const getDefaultTargetState = () => {
+        return [defaultTarget];
     };
 
     const getProviderSurfaces = (provider) => {
-        const surface = surfaceMap.find(s => s.key === provider.surfaceKey)
-        return surface? surface.surface : [];
+        const smi = surfaceMap.find(s => s.key === provider.surfaceKey)
+        return smi? smi.surface : [];
     };
 
     function parseUrl(url) {
@@ -559,6 +556,33 @@ const useSurface = () => {
                 name: "TikTok Videos",
                 surface: ["tags", "likes", "music", "comments", "title"],
             },
+            //! REDDIT ATTACK SURFACE
+            {
+                key: "reddit",
+                name: "Reddit",
+                surface: ["username", "avatar", "redditId", "posts", "followers"],
+            },
+            //! LINKEDIN ATTACK SURFACE
+            {
+                key: "linkedin",
+                name: "LinkedIn",
+                surface: ["name", "headline", "connections", "about", "skills", "endorsements", "certifications", "accomplishments", "recommendations", "interests", "contact", "experience", "articles"],
+            },
+            {
+                key: "recommendations",
+                name: "Recommendations",
+                surface: ["given", "received"],
+            },
+            {
+                key: "articles",
+                name: "Articles & Activity",
+                surface: ["posts", "likes", "articles", "documents"],
+            },
+            {
+                key:"accomplishments",
+                
+            }
+
         ]
 
         //? RESOURCES START HERE
@@ -1676,12 +1700,10 @@ const useSurface = () => {
         getIdentityProviders,
         getOtherSurfaces,
         addSurfaceToTarget,
-        getDefaultTarget,
-        getCurrentTarget,
-        defaultTarget,
         removeSurfaceFromTarget,
         getProviderSurfaces,
-        getRawResources
+        getRawResources,
+        getDefaultTargetState
     };
 };
 

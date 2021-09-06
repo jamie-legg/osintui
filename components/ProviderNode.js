@@ -1,4 +1,5 @@
 import { Switch } from "@headlessui/react";
+import { PlusIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import useSurface from "../hooks/useSurface";
 import { classNames } from "../shared/utils";
@@ -13,12 +14,30 @@ export default function ProviderNode({ handler, provider, icon = null }) {
 
   const [clicked, setClicked] = useState(false);
   return (
-    <li key={provider.name} className="relative">
-
-      <div
-        className='group block w-full aspect-w-10 aspect-h-3 bg-white dark:bg-gray-900 overflow-hidden'
-      >
-        <Switch.Group as="div" className="ml-24 mt-1 flex">
+    <div 
+    onClick={registerProviderInformation}
+    key={provider.name} className="cursor-pointer group grid grid-cols-3 h-48 w-48 border-dashed border-4 dark:border-gray-900 hover:border-gray-300 border-gray-100 rounded-xl p-3">
+      <div className={"row col-span-1"}>
+        {icon ? <provider.icon className="h-10 mx-auto my-auto w-10" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" />
+            :
+            <svg className={classNames(clicked ? "bg-white" : "bg-white", "block h-10 w-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white")} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>{provider.name}</title>
+              <path fill="currentColor" d={provider.iconPath} />
+            </svg>
+          }
+      </div>
+      <div className="row col-span-2">
+        <div className="text-xl title font-medium text-gray-900 dark:text-white text-right">{provider.name}</div>
+      </div>
+      <div className="row col-span-3">
+        <PlusIcon className="mx-auto w-12 h-12 text-center text-white group-hover:text-gray-300 dark:border-gray-900 hover:border-gray-300 "></PlusIcon>
+      </div>
+      <div className={classNames(clicked ? 
+        "text-white dark:text-gray-900 bg-gray-900 dark:bg-white" : 
+        "bg-white dark:bg-gray-900", 
+        "text-gray-900 col-span-2 dark:text-white border-gray-900 dark:border-white title text-3xl w-10 h-10 px-2.5 mt-2 pt-0.5")}>
+          {getProviderSurfaces(provider).length}</div>
+      <Switch.Group as="div" className="flex col-span-1 items-center">
           <Switch
           onChange={registerProviderInformation}
             checked={clicked}
@@ -39,16 +58,6 @@ export default function ProviderNode({ handler, provider, icon = null }) {
 
           </Switch.Label>
         </Switch.Group>
-        {icon ? <provider.icon className="h-10 mx-auto my-auto w-10" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" />
-          :
-          <svg className={classNames(clicked ? "bg-white" : "bg-white", "block h-10 w-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white")} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <title>{provider.name}</title>
-            <path fill="currentColor" d={provider.iconPath} />
-          </svg>
-        }
-
-      </div>
-      <div className={classNames(clicked ? "text-white dark:text-gray-900 bg-gray-900 dark:bg-white" : "bg-white dark:bg-gray-900", "text-gray-900 dark:text-white border-gray-900 dark:border-white items-center px-2 h-8 border-2 cursor-pointer title text-xl uppercase")}>{provider.name} +{getProviderSurfaces(provider).length}</div>
-    </li>
+    </div>
   )
 }

@@ -13,7 +13,7 @@ export default function Resources() {
     
 
     return (
-        <Layout pageNo={1}>
+        <>
                   <Head>
         <title>Resources / OSINTUI</title>
         <link rel="icon" href="/favicon.ico" />
@@ -70,6 +70,7 @@ export default function Resources() {
             </nav>
             </div>
             </main>
-        </Layout>
+            </>
     )
+    
 }
