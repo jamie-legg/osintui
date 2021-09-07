@@ -7,7 +7,7 @@ function classNames(...classes) {
   }
 
 export default function ThemeToggle() {
-  
+
     const { theme, setTheme } = useTheme();
 
     const toggleTheme = () => {
@@ -20,7 +20,7 @@ export default function ThemeToggle() {
       onChange={toggleTheme}
       className={classNames(
         theme === 'dark' ? 'bg-gray-800'  : 'bg-gray-200',
-        'transition-color relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
+        'transition-color mt-2 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
       )}
     >
       <span className="sr-only">Change theme</span>

@@ -38,10 +38,19 @@ function classNames(...classes) {
 
 
 export default function Home() {
-  const operations = useOperation();
-  const { getIdentityProviders, getOtherVectors, getDefaultTargetState } = useSurface();
+  const { operations, operationIndex, targetIndex} = useOperation();
+  const { getIdentityProviders, getOtherVectors } = useSurface();
   const [selectedProvider, setSelectedProvider] = useState(null);
-  const [target, setTarget] = useState(operations[0]);
+  const [target, setTarget] = useState(operations[operationIndex][targetIndex]);
+
+  useEffect(() => {
+    console.log('target', target);
+    console.log('operations', operations);
+    console.log('operationIndex', operationIndex);
+    console.log('targetIndex', targetIndex);
+
+    setTarget(operations[operationIndex][targetIndex]);
+  }, []);
 
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -67,10 +76,7 @@ export default function Home() {
     setTarget(addIdentityToTarget(identity, provider))
   };
 
-    
-  
 
-  console.log(target);
   return (
     <>
       <Head>
@@ -85,9 +91,9 @@ export default function Home() {
 
               {/* Gallery */}
               <section className="pb-16" aria-labelledby="identification-gallery">
-                <p className="mb-5 text-gray-500 dark:text-gray-300">
-                  <LightningBoltIcon className={`inline-block h-5 w-5 mb-1 mr-5 text-yellow-400`} />
-                  Configure your initial identification vectors here in order to calculate and populate your attack surface.</p>
+                <p className="mb-5 text-gray-500 pointer-events-none select-none dark:text-gray-300">
+                  <LightningBoltIcon className={`inline-block h-5 w-5 mb-1 mr-5 text-red-600 dark:text-blue-600`} />
+                  Configure your initial identification vectors here, then populate your generated attack surface.</p>
                 <ul
                   role="list"
                   className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-3xl:gap-x-8"
@@ -99,7 +105,7 @@ export default function Home() {
                 <span className="title text-2xl uppercase">Implicit Providers</span>
                   </div>
                     {getOtherVectors().map((provider, i) => (
-                      <ProviderNode target={target} handler={TargetIdentityHandler} provider={provider} icon={provider.icon} key={i} index={i} />
+                      <ProviderNode target={target} handler={TargetIdentityHandler} provider={provider} implicit={true} icon={provider.icon} key={i} index={i} />
                   ))}
                 </ul>
               </section>

@@ -1,21 +1,25 @@
 import { Switch } from "@headlessui/react"
 import { DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon } from "@heroicons/react/outline"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useSurface from "../hooks/useSurface"
-import { DocumentRemoveIcon, PlusSmIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
+import { ArrowsExpandIcon, DocumentRemoveIcon, PlusSmIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
 import { classNames } from "../shared/utils"
 import ModalDialog from "./ModalDialog"
 import { useOperation } from '../context/operation'
 import SelectModal from "./SelectModal"
 
-export default function CurrentTarget({ onChange }) {
+export default function CurrentTarget({ onChange, parentTarget }) {
 
   
   const [isOpen, setIsOpen] = useState(false)
   const { getIdentityProviders } = useSurface();
-  const { operation, setOperation } = useOperation();
-  const [target, setTarget] = useState(useOperation()[0])
-  
+  const [target, setTarget] = useState(parentTarget)
+
+  useEffect(() => {
+    setTarget(parentTarget)
+  }, [parentTarget])
+
+  const imageRef = useRef();
 
   const [lowHangingDialogOpen, setLowHangingDialogOpen] = useState(false)
   const [photoEnabled, setPhotoEnabled] = useState(true)
@@ -88,13 +92,17 @@ export default function CurrentTarget({ onChange }) {
         </Switch.Group>
         <div className="block w-full aspect-w-10 aspect-h-10 rounded-lg object-cover overflow-hidden">
           {target.profilePicUrl ? <img src={photoEnabled ? target.profilePicUrl : "/static.jpeg"} alt="" className="object-cover" /> :
-            <button type="button" className="block w-full border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2">
-              <PhotographIcon className="inline w-7 h-7 text-gray-400"></PhotographIcon>
-              <PlusSmIcon className="inline w-7 h-7 text-gray-400"></PlusSmIcon>
-              <span className="mt-2 block text-sm font-medium text-gray-900">
+            <>
+            <button type="button" onClick={() => imageRef.current.focus()} className="block group w-full border-4 border-gray-200 border-dashed rounded-lg p-12 text-center hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2">
+              
+              <PhotographIcon className="inline w-7 h-7 text-gray-400 group-hover:text-gray-500"></PhotographIcon>
+              <PlusSmIcon className="inline w-7 h-7 text-gray-400 group-hover:text-gray-500"></PlusSmIcon>
+              <label className="mt-2 block text-sm font-medium text-gray-400 group-hover:text-gray-500">
                 Add a new image
-              </span>
-            </button>}
+              </label>
+            </button>
+            <input ref={imageRef} id="file-upload" name="file-upload" type="file" className="w-full h-full z-40 sr-only border-none absolute block pin-r pin-t"></input>
+            </>}
         </div>
         <div className="mt-4 flex items-start justify-between">
           <div>
@@ -131,12 +139,12 @@ export default function CurrentTarget({ onChange }) {
         </div>
       </div>
       <div>
-        <h3 className="text-xl header uppercase text-gray-900 dark:text-white">Available Vectors <RefreshIcon onClick={() => setState(!state)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
+        <h3 className="text-xl header text-gray-900 dark:text-white">Available Vectors <ArrowsExpandIcon onClick={() => setState(!state)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
         <ModalDialog open={lowHangingDialogOpen} onClose={() => setState(!state)} />
         <dl className="mt-2 border-t border-b border-gray-200">
           {target.availableVectors ? target.availableVectors.map((surface, i) => {
             return (
-              <div key={surface.key} className="cursor-pointer group uppercase p-1.5 m-1 title inline-block bg-gray-900 text-white text-sm font-medium">
+              <div key={surface.key} className="cursor-pointer group p-1.5 m-1 code inline-block bg-gray-900 text-white text-sm font-medium">
                 <dt className="">{infoEnabled ? surface.key : "####" + (Math.floor(Math.random() * 2) == 1 ? "##" : "#")} <span className="p-1 px-2 first-line:w-3 h-3 rounded-full bg-white text-red-600 group-hover:text-red-800">{surface.priority}</span></dt>
 
               </div>
@@ -144,7 +152,7 @@ export default function CurrentTarget({ onChange }) {
           }) : null}
         </dl>
       </div>
-      <h3 className="text-xl header uppercase dark:text-white text-gray-900">DOCUMENTED VECTORS <RefreshIcon onClick={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
+      <h3 className="text-xl header dark:text-white text-gray-900">Documented Vectors <RefreshIcon onClick={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
       <dl className="mt-2 border-t border-b border-gray-200">
         {target.documentedVectors ? target.documentedVectors.map((surface, i) => {
           return (

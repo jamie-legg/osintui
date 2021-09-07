@@ -11,11 +11,11 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="w-64 flex flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
-        <nav className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
+        <nav className="bg-white dark:bg-gray-900 border-r-4 border-gray-900 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
           <div className="flex-shrink-0 px-4 flex items-center">
             {theme === "dark" ? <img className="w-16 h-16" src="/osintuigray.png"></img> : <img className="w-16 h-16" src="/osintuiwhite.png"></img>}
             <p className="title text-5xl px-2">
-              OSINTUI
+              OSINTUI<span className="text-sm">beta</span>
             </p>
           </div>
           <div className="flex-grow mt-5 flex flex-col">
@@ -34,13 +34,18 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
                       'title group border-l-4 py-2 px-3 flex items-center text-xl font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
                     )}
                   >
+                    {item.current ? <item.currentIcon className={classNames(
+                        item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
+                        'mr-3 flex-shrink-0 h-6 w-6' 
+                      )}
+                      aria-hidden="true" /> :
                     <item.icon
                       className={classNames(
                         item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
                         'mr-3 flex-shrink-0 h-6 w-6'
                       )}
                       aria-hidden="true"
-                    />
+                    />}
                     {item.name}
                   </a>
                 </Link>
@@ -66,7 +71,7 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
                 className={classNames(
                   item.current
                     ? 'bg-gray-100 dark:bg-gray-900 border-gray-800 dark:border-gray-50 text-gray-800 dark:text-white title'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-xl',
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
                   'group border-l-4 py-2 px-3 flex items-center text-sm font-medium'
                 )}
               >
@@ -97,7 +102,7 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
               <item.icon
                 className={classNames(
                   item.current ? 'text-gray-800 dark:text-white' : 'text-gray-400 group-hover:text-gray-500',
-                  'mr-3 flex-shrink-0 h-6 w-6'
+                  'mr-6 flex-shrink-0 h-6 w-8'
                 )}
                 aria-hidden="true"
               />
@@ -107,7 +112,7 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
           <div className="ml-2 flex w-full text-gray-600 hover:text-gray-900 hover:bg-gray-50">
 
             <ThemeToggle callback={setTheme}></ThemeToggle>
-            <p className="ml-5 text-sm font-medium text-gray-600">Dark Mode</p>
+            <p className="ml-5 text-sm font-medium text-gray-600 py-2">Dark Mode</p>
           </div>
         </nav>
       </div>

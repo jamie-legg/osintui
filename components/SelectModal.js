@@ -1,11 +1,10 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
-import { CheckIcon } from '@heroicons/react/outline'
+import { BookmarkIcon, CheckIcon, CubeTransparentIcon, ExternalLinkIcon, LinkIcon, PencilAltIcon } from '@heroicons/react/outline'
 import { classNames } from '../shared/utils'
 
 export default function SelectModal({ providers, target, open, onClose, onChange }) {
-  console.log('SelectModal', { providers, target, open, onClose, onChange });
   const [isOpen, setOpen] = useState(open)
 
   useEffect(() => {
@@ -16,6 +15,10 @@ export default function SelectModal({ providers, target, open, onClose, onChange
     setOpen(false)
     onClose()
   }
+
+  const makeDefault = (provider) => {
+  }
+
 
   return (
     <div>
@@ -56,15 +59,14 @@ export default function SelectModal({ providers, target, open, onClose, onChange
                         <div
                           key={i}
                           value={provider.surfaceKey}
-                          className={({ active }) =>
-                            classNames(
-                              target.defaultProviderKey === provider.surfaceKey ? 'ring-1 ring-offset-2 ring-gray-900' : '',
-                              'relative block rounded-none border border-gray-300 bg-white shadow-sm px-6 py-4 cursor-pointer hover:border-gray-400 sm:flex sm:justify-between focus:outline-none'
+                          className={classNames(
+                              target.defaultProviderKey === provider.surfaceKey ? 'border-red-600 border-solid' : 'border-dashed hover:border-gray-400',
+                              'relative block rounded-none border-4 shadow-sm px-6 py-4 cursor-pointer sm:flex sm:justify-between focus:outline-none group'
                             )
                           }
                         >
-                          <div className="flex items-center">
-                            <div className="text-sm">
+                          <div className="grid grid-cols-3">
+                            <div className="col-span-1 text-sm">
                               <div className="font-medium text-gray-900">
                                 <svg className={"block h-10 w-10 bg-white dark:bg-gray-900 text-gray-900 dark:text-white"} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                   <title>{provider.name}</title>
@@ -75,27 +77,26 @@ export default function SelectModal({ providers, target, open, onClose, onChange
                                 </h3>
 
                               </div>
-                              <div className="text-gray-500">
-                                <p className="sm:inline">
-                                  {provider.username ? provider.username : 'Not Configured'}
-                                </p>{' '}
-                              </div>
                             </div>
-                          </div>
-                          <form onSubmit={(e) => {
+                            <div className="col-span-1 space-x-2 items-end text-right">
+                              
+                            <form 
+                              
+                            onSubmit={(e) => {
                             e.preventDefault()
                             updateTarget()
-                          }
+                            }
                           }>
-                            <input placeholder={provider.username ? provider.username : 'username'} className="border-b-4 border-gray-900 w-48"></input>
-                          </form>
-                          <div
-                            className={classNames(
-                              target.defaultProviderKey === provider.surfaceKey ? 'border-gray-900' : 'border-transparent',
-                              'absolute -inset-px rounded-none border-2 pointer-events-none'
-                            )}
-                            aria-hidden="true"
-                          />
+                            <input disabled={target.identities[i] && target.identities[i].username} placeholder={target.identities[i] ? target.identities[i].username : '@username'} className="pl-1 code inline-block rounded-none border-b-4 mx-2 border-gray-900"></input>
+                            </form>
+                          </div>
+                          <div className="col-span-1 ml-4 items-end text-right">
+                            <BookmarkIcon onClick={makeDefault(provider)} className="group-hover:text-red-400 inline-block h-6 w-6 text-gray-900 dark:text-white" />
+                            <PencilAltIcon className="inline-block h-6 w-6 text-gray-900 dark:text-white" />
+                            <ExternalLinkIcon className="inline-block h-6 w-6 text-gray-900 dark:text-white" />
+                          </div>
+
+                          </div>
                         </div>
                       )) : null}
 

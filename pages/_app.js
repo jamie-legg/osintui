@@ -11,22 +11,6 @@ import { OperationWrapper } from '../context/operation'
 
 function MyApp({ Component, pageProps }) {
 
-  useEffect(() => {
-    const ops = getItem('operations')
-    if(!ops) {
-    }
-    else if(ops.length == 0) {
-      alert("no ops")
-    }},[]);
-    
-  
-
-  const changeOperations = (ops=[]) => {
-    setItem('operations', ops)
-  }
-
-  const { getItem } = useStorage();
-
   const [pageNo, setPageNo] = useState(0)
   
 

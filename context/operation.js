@@ -1,22 +1,56 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import useStorage from '../hooks/useStorage';
 import useSurface from '../hooks/useSurface';
 
 const OperationContext = createContext();
 const OperationUpdateContext = createContext();
 
 export function OperationWrapper({ children }) {
-  const { getDefaultTargetState, getVectorSurfaceMap, getIdentityProviders } = useSurface();
+  const { getItem } = useStorage();
+  const { getDefaultOperationState, getDefaultTarget, getVectorSurfaceMap, getIdentityProviders } = useSurface();
   const vectorMap = getVectorSurfaceMap();
   const providers = getIdentityProviders();
-  const [ operationState, setOperationState ] = useState(getDefaultTargetState());
+  const [ globalOps, setGlobalOps ] = useState(getDefaultOperationState());
+  const [ currentTarget, currentTargetState ] = useState(globalOps.operations[globalOps.operationIndex][globalOps.targetIndex]);
+
+  useEffect(() => {
+    console.log("checking for stored ops");
+    const stored_ops = getItem('operations');
+    if (stored_ops) {
+      setGlobalOps(stored_ops);
+    }
+  }, []);
+
+  const getNextTargetId = () => {
+    let high_id = 0;
+    for (const target of globalOps.operations[globalOps.operationIndex])
+      if (target.id > high_id)
+        high_id = target.id;
+    return high_id + 1;
+  }
 
   const updateFns = {
+    newTargetInOperation: () => {
+      const newTarget = getDefaultTarget();
+      newTarget.id = getNextTargetId();
+      globalOps.operations[globalOps.operationIndex].push(newTarget);
+      setGlobalOps({ ...globalOps, targetIndex: globalOps.targetIndex+1 });
+      return newTarget;
+    },
+    newOperation: () => {
+      globalOps.operations.push([getDefaultTarget()]);
+      setGlobalOps({ ...globalOps, operationIndex: operationIndex+1 });
+    },
+
     addIdentityToTarget: (identity, provider ) => {
-      const currentTarget = operationState[0];
       const { surface } = vectorMap.find(s => s.key === provider);
       // get index of provider from identity providers
       const providerIndex = providers.findIndex(p => p.surfaceKey === provider);
       const shouldBeDefault = !(currentTarget.identities.find(i => i.default === true));
+      if(shouldBeDefault) {
+        currentTarget.defaultProviderKey = provider;
+        currentTarget.username = identity;
+      }
       currentTarget.identities[providerIndex] = {
         platform: provider,
         username: identity,
@@ -34,32 +68,32 @@ export function OperationWrapper({ children }) {
             });
         }
     });
-    setOperationState([...operationState]);
+    globalOps.operations[globalOps.operationIndex][globalOps.targetIndex] = currentTarget;
+    setGlobalOps(globalOps);
     return currentTarget;
     },
     removeIdentityFromTarget: (provider) => {
-      const target = operationState[0];
-      console.log(target.identities);
-      const identity = target.identities.find(i => i.platform === provider.surfaceKey);
+      const identity = currentTarget.identities.find(i => i.platform === provider.surfaceKey);
       const { surface } = vectorMap.find(s => s.key === provider.surfaceKey);
-      target.identities.splice(target.identities.indexOf(identity), 1);
+      currentTarget.identities.splice(currentTarget.identities.indexOf(identity), 1);
       surface.forEach(s => {
-          const targetSurface = target.availableVectors.find(as => as.key === s);
+          const targetSurface = currentTarget.availableVectors.find(as => as.key === s);
           if (targetSurface) {
               targetSurface.priority -= 1;
               if (targetSurface.priority === 0) {
-                  target.availableVectors.splice(target.availableVectors.indexOf(targetSurface), 1);
+                currentTarget.availableVectors.splice(currentTarget.availableVectors.indexOf(targetSurface), 1);
               }
           }
       });
-      setOperationState([...operationState]);
-      return target;
+      globalOps.operations[globalOps.operationIndex][globalOps.targetIndex] = currentTarget;
+      setGlobalOps(globalOps);
+      return currentTarget;
     },
     setDefaultProvider: (providerKey) => {
-      const target = operationState[0];
+      const target = operationState[globalOps.index];
       target.identities.forEach(i => i.default = false);
       const identity = target.identities.find(i => i.platform === providerKey);
-      identity.default = true;
+      if(identity) identity.default = true;
       setOperationState([...operationState]);
       return target;
     },
@@ -67,7 +101,7 @@ export function OperationWrapper({ children }) {
   };
 
   return (
-    <OperationContext.Provider value={operationState}>
+    <OperationContext.Provider value={globalOps}>
       <OperationUpdateContext.Provider value={updateFns}>
         {children}
       </OperationUpdateContext.Provider>

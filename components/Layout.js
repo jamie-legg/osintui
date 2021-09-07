@@ -6,6 +6,7 @@ import {
   BellIcon,
   BriefcaseIcon,
   ChatIcon,
+  ClockIcon,
   CodeIcon,
   CogIcon,
   DocumentSearchIcon,
@@ -17,11 +18,18 @@ import {
   IdentificationIcon,
   MenuAlt2Icon,
   QuestionMarkCircleIcon,
+  SelectorIcon,
+  SwitchVerticalIcon,
+  TerminalIcon,
   UploadIcon,
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline'
-import { HeartIcon, SearchIcon } from '@heroicons/react/solid'
+import { HeartIcon, SearchIcon, 
+  IdentificationIcon as SolidIdentificationIcon,
+BriefcaseIcon as SolidBriefcaseIcon,
+ClockIcon as SolidClockIcon, 
+PlusIcon} from '@heroicons/react/solid'
 import ThemeToggle from './ThemeToggle'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
@@ -32,12 +40,13 @@ import { useOperation, useOperationUpdate } from '../context/operation'
 import SelectModal from './SelectModal'
 import DesktopSidebar from './DesktopSidebar'
 import MobileSidebar from './MobileSidebar'
+import InfoModal from './InfoModal'
 
 const navigation = {
   primary: [
-    { name: 'Identities', href: '/', icon: IdentificationIcon, current: false },
-    { name: 'Resources', href: '/resources', icon: BriefcaseIcon, current: false },
-    { name: 'Operations', href: '/operations', icon: DocumentSearchIcon, current: false },
+    { name: 'Identities', href: '/', icon: IdentificationIcon, currentIcon: SolidIdentificationIcon, current: false },
+    { name: 'Resources', href: '/resources', icon: BriefcaseIcon, currentIcon: SolidBriefcaseIcon, current: false },
+    { name: 'Operations', href: '/operations', icon: ClockIcon, currentIcon: SolidClockIcon, current: false },
   ],
   secondary: [
     { name: 'Source Code', href: 'https://github.com/jamie-legg/osintui', icon: CodeIcon },
@@ -45,6 +54,7 @@ const navigation = {
     { name: 'Community', href: 'https://discord.gg/HVUdnuCqwV', icon: FireIcon },
   ],
   tertiary: [
+    { name: 'Help', icon: QuestionMarkCircleIcon },
     { name: 'Reset', icon: EyeOffIcon },
   ]
 }
@@ -62,19 +72,25 @@ const tabs = [
 ]
 
 
-export default function Layout({ children, changeOperations, footerRef, pageNo, onPageChange, onDataWipe }) {
+export default function Layout({ children, footerRef, pageNo, onPageChange, onDataWipe }) {
   
-  const { getIdentityProviders } = useSurface();
-  const ops = useOperation();
-  const { setDefaultProvider } = useOperationUpdate();
-  const [target, setTarget] = useState(ops[0])
+  const { getIdentityProviders, getIdentityIcon } = useSurface();
+  const { operationIndex, targetIndex, operations} = useOperation();
+  const { setDefaultProvider, newTargetInOperation } = useOperationUpdate();
+  const [target, setTarget] = useState(operations[operationIndex][targetIndex])
   const changeDefaultIdentity = (id) => {
     setTarget(setDefaultProvider(id))
   }
 
+  const addNewTarget = () => {
+    const freshTarget = newTargetInOperation()
+    setTarget(freshTarget)
+  }
+
+
   const [nav, setNav] = useState(navigation.primary[pageNo]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+  const [infoOpen, setInfoOpen] = useState(false);
   const [selectModalOpen, setSelectModalOpen] = useState(false);
   const [targetModalOpen, setTargetModalOpen] = useState(false);
   const providers = getIdentityProviders();
@@ -87,6 +103,8 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
     setSelectModalOpen(!selectModalOpen)
   }
 
+  
+
 
   useEffect(() => {
     //turn current off on each key of navigation
@@ -97,7 +115,6 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
     setNav(navigation)
   })
 
-
   return (
     <div className="relative h-screen overflow-hidden flex">
       <MobileSidebar open={sidebarOpen} onPageChange={onPageChange} navigation={navigation} pageNo={pageNo} target={target}  />
@@ -107,6 +124,7 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
       {/* Content area */}
       <div className="flex-1 flex flex-col dark:bg-gray-900">
+        <InfoModal isOpen={infoOpen} />
         <SelectModal providers={providers} target={target} open={selectModalOpen} onClose={toggleSelectModal} onChange={changeDefaultIdentity}></SelectModal>
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
           <button
@@ -119,7 +137,13 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
           </button>
           <span className="border-r-4 border-gray-900 pr-4">{pageNo === 0? "Identification Vectors" : pageNo === 1? "Research Resources" : "Historical Operations"}</span>
           <span className="hidden xl:block ">&nbsp;
-            <span onClick={() => toggleSelectModal()} className="pl-4 mt-0.5 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">{target.username ? target.username : "target_username"}</span>
+            <span onClick={() => toggleSelectModal()} className="pl-4 mt-0.5 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">
+            {target.defaultProviderKey.length > 0 ? 
+            <svg className={"inline-block h-6 w-6 pb-1 text-gray-900"} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <title>{target.defaultProviderKey}</title>
+            <path fill="currentColor" d={getIdentityIcon(target.defaultProviderKey)} />
+          </svg>: null}
+          {target.username ? target.username : "target_username"}</span>
           </span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 code dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
             +{target.availableVectors.length}
@@ -128,9 +152,12 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
             <EyeIcon onClick={toggleSelectModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
 
-          <div className="hidden lg:flex absolute right-10 place-self-end items-end text-3xl title uppercase">Current_Op
-            <UploadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-            <DownloadIcon className="h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+          <div className="border-4 border-gray-900 p-2 hidden lg:flex absolute right-10 place-self-end items-end text-3xl code uppercase">
+            #OP-C:{operationIndex}_{targetIndex}
+            <PlusIcon onClick={addNewTarget} className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <SelectorIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <UploadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <DownloadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
           </div>
 
         </div>
@@ -142,14 +169,14 @@ export default function Layout({ children, changeOperations, footerRef, pageNo, 
 
             {children}
             {/* Current target sidebar */}
-            <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 border-l border-gray-200 overflow-y-auto lg:block">
-              <CurrentTarget currentTarget={target} />
+            <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 overflow-y-auto lg:block">
+              <CurrentTarget parentTarget={target} />
             </aside>
 
           </div>
         </div>
         <footer className="flex items-center justify-center w-full h-16 border-t">
-          <ArrowNarrowRightIcon className="text-gray-500 inline-block h-5 w-5 ml-5" />
+          <TerminalIcon className="text-gray-500 inline-block h-8 w-8 ml-5" />
           <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
 
             <input ref={footerRef} className="w-full h-6 border-none bg-white dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />

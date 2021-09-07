@@ -1,16 +1,20 @@
 import Head from "next/head";
 import Layout from "../components/Layout";
+import { useOperation } from "../context/operation";
 
 export default function Operations() {
+    const operations = useOperation();
     return(
-        <div pageNo={2}>
+        <>
                   <Head>
         <title>Operations / OSINTUI</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-            <h1>Operations</h1>
-            <p>
-        </p>
-        </div>
+        <main className="flex-1 overflow-y-auto">
+            <pre className="code text-sm">
+                {JSON.stringify(operations, null, 2)}
+            </pre>
+        </main>
+        </>
     )
 }

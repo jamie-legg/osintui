@@ -1,29 +1,4 @@
-import { AtSymbolIcon, GlobeAltIcon, InboxIcon, InboxInIcon, PhotographIcon, ShoppingBagIcon } from "@heroicons/react/outline";
-
-const defaultTarget = {
-    name: '',
-    username: '',
-    profilePicUrl: "",
-    identities: [
-        {
-            platform: "",
-            username: "",
-            active: false,
-            default: false
-        },
-    ],
-    vectors: [
-        {
-            key: "",
-            data: []
-        }
-    ],
-    defaultProviderKey: "tiktok",
-    availableVectors: []
-}
-
-
-
+import { AtSymbolIcon, DotsCircleHorizontalIcon, GlobeAltIcon, InboxIcon, InboxInIcon, MailIcon, PhotographIcon, ShoppingBagIcon, VariableIcon } from "@heroicons/react/outline";
 
 const useSurface = () => {
 
@@ -41,20 +16,64 @@ const useSurface = () => {
             { name: 'Pinterest', surfaceKey: "pinterest", iconPath: "M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z" },
             { name: 'Skype', surfaceKey: "skype", iconPath: "M12.069 18.874c-4.023 0-5.82-1.979-5.82-3.464 0-.765.561-1.296 1.333-1.296 1.723 0 1.273 2.477 4.487 2.477 1.641 0 2.55-.895 2.55-1.811 0-.551-.269-1.16-1.354-1.429l-3.576-.895c-2.88-.724-3.403-2.286-3.403-3.751 0-3.047 2.861-4.191 5.549-4.191 2.471 0 5.393 1.373 5.393 3.199 0 .784-.688 1.24-1.453 1.24-1.469 0-1.198-2.037-4.164-2.037-1.469 0-2.292.664-2.292 1.617s1.153 1.258 2.157 1.487l2.637.587c2.891.649 3.624 2.346 3.624 3.944 0 2.476-1.902 4.324-5.722 4.324m11.084-4.882l-.029.135-.044-.24c.015.045.044.074.059.12.12-.675.181-1.363.181-2.052 0-1.529-.301-3.012-.898-4.42-.569-1.348-1.395-2.562-2.427-3.596-1.049-1.033-2.247-1.856-3.595-2.426-1.318-.631-2.801-.93-4.328-.93-.72 0-1.444.07-2.143.204l.119.06-.239-.033.119-.025C8.91.274 7.829 0 6.731 0c-1.789 0-3.47.698-4.736 1.967C.729 3.235.032 4.923.032 6.716c0 1.143.292 2.265.844 3.258l.02-.124.041.239-.06-.115c-.114.645-.172 1.299-.172 1.955 0 1.53.3 3.017.884 4.416.568 1.362 1.378 2.576 2.427 3.609 1.034 1.05 2.247 1.857 3.595 2.442 1.394.6 2.877.898 4.404.898.659 0 1.334-.06 1.977-.179l-.119-.062.24.046-.135.03c1.002.569 2.126.871 3.294.871 1.783 0 3.459-.69 4.733-1.963 1.259-1.259 1.962-2.951 1.962-4.749 0-1.138-.299-2.262-.853-3.266" }]
     };
+
+    const getIdentityIcon = (surfaceKey) => {
+        return getIdentityProviders().find(provider => provider.surfaceKey === surfaceKey).iconPath;
+    };
     
 
     const getOtherVectors = () => {
-        return [{ name: 'Web', surfaceKey: [], icon:GlobeAltIcon },
-        { name: 'Username', surfaceKey: [], icon:AtSymbolIcon },
-        { name: 'Image', surfaceKey: [], icon:PhotographIcon },
-        { name: 'Email', surfaceKey: [], icon:InboxInIcon },
-        { name: 'DWM', surfaceKey: [], icon:ShoppingBagIcon }
+        return [{ name: 'Domain', surfaceKey: "domain", placeholder:"example.com", icon:GlobeAltIcon },
+        { name: 'Username', surfaceKey: "username", placeholder:"@username", icon:AtSymbolIcon },
+        { name: 'IP Address', surfaceKey: "ip", placeholder:"192.168.0.1", icon:DotsCircleHorizontalIcon },
+        { name: 'Email', surfaceKey: "email", placeholder:"...@example.com", icon:MailIcon },
+        { name: 'Variables', surfaceKey: "var", placeholder:"(x) => y", icon:VariableIcon }
         ]
     };
 
 
-    const getDefaultTargetState = () => {
-        return [defaultTarget];
+
+
+    const getDefaultTarget = () => {
+        const defaultTarget = {
+            id: 0,
+            name: '',
+            username: '',
+            profilePicUrl: "",
+            identities: [
+                {
+                    platform: "",
+                    username: "",
+                    active: false,
+                    default: false
+                },
+            ],
+            vectors: [
+                {
+                    key: "",
+                    data: []
+                }
+            ],
+            defaultProviderKey: "",
+            availableVectors: []
+        }
+        
+        const newTarget = {}
+        for (let key in defaultTarget) {
+            newTarget[key] = defaultTarget[key];
+          }
+        return newTarget;
+    };
+
+    const getDefaultOperationState = () => {
+        return {
+            operationIndex: 0,
+            targetIndex: 0,
+            encrypted: false,
+            operations: [
+                [getDefaultTarget()]
+            ]
+        }
     };
 
     const getProviderSurfaceVectors = (provider) => {
@@ -124,7 +143,7 @@ const useSurface = () => {
             },
             //! EMAIL SURFACE
             {
-                key: "emailAddr",
+                key: "email",
                 name: "Email Address",
                 surface: ["username", "domain", "search"],
             },
@@ -397,7 +416,7 @@ const useSurface = () => {
             {
                 key: "search",
                 name: "Searches",
-                surface: ["friends", "searchEngine", "imageSearchEngine", "breaches", "publicKey", "lookup", "registers"],
+                surface: ["reputation", "breaches", "lookup", "registers"],
             },
             {
                 key: "friends",
@@ -420,7 +439,7 @@ const useSurface = () => {
                 surface: [],
             },
             {
-                key: "publicKey",
+                key: "pgp_key",
                 name: "Public PGP Key Search",
                 surface: [],
             },
@@ -432,21 +451,16 @@ const useSurface = () => {
             {
                 key: "registers",
                 name: "Registered Domains",
-                surface: ["possibleAffiliation"],
+                surface: ["affiliations"],
             },
             //! INSTAGRAM ATTACK SURFACE
             {
                 key: "instagram",
                 name: "Instagram",
-                surface: ["instaId", "profilePic", "username", "name", "verified", "stories", "followers", "following", "website", "biography", "thirdParty", "posts"],
+                surface: ["profile_pic", "username", "name", "verified", "stories", "followers", "following", "website", "biography", "posts"],
             },
             {
-                key: "instaId",
-                name: "Instagram ID",
-                surface: [],
-            },
-            {
-                key: "profilePic",
+                key: "profile_pic",
                 name: "Profile Picture",
                 surface: [],
             },
@@ -471,9 +485,9 @@ const useSurface = () => {
                 surface: [],
             },
             {
-                key: "video",
+                key: "videos",
                 name: "Video",
-                surface: [],
+                surface: ["title", "subtitles", "thumbnails", "description", "views", "timestamp", "likes", "dislikes", "category", "comments", "location", "tags"],
             },
             {
                 key: "link",
@@ -519,23 +533,13 @@ const useSurface = () => {
             {
                 key: "fb",
                 name: "Facebook",
-                surface: ["fbId", "profilePic", "username", "name", "verified", "stories", "followers", "following", "website", "biography", "thirdParty", "posts"],
-            },
-            {
-                key: "fbId",
-                name: "Facebook ID",
-                surface: [],
+                surface: ["profilePic", "username", "name", "verified", "stories", "followers", "following", "website", "biography", "posts"],
             },
             //! TIKTOK ATTACK SURFACE
             {
                 key: "tiktok",
                 name: "TikTok",
-                surface: ["tiktokId", "profilePic", "username", "name", "verified", "likes", "followers", "following", "tiktokVideos", "biography", "thirdParty", "posts"],
-            },
-            {
-                key: "tiktokId",
-                name: "TikTok ID",
-                surface: [],
+                surface: ["profile_pic", "username", "name", "verified", "likes", "followers", "following", "tiktok_vids", "biography", "posts"],
             },
             {
                 key:"tiktokVideos",
@@ -566,8 +570,33 @@ const useSurface = () => {
             },
             {
                 key:"accomplishments",
+                name: "Accomplishments",
+                surface: []
+            },
+            //! TWITTER ATTACK SURFACE
+            {
+                key: "twitter",
+                name: "Twitter",
+                surface:["name", "username", "profilePic", "banner", "joinDate", "lists","followers","following","mutuals", "biography", "location", "website", "birthday", "verified", "likes", "tweets"]
+            },
+            {
+                key: "tweets",
+                name: "Tweets",
+                surface: ["retweets", "content", "images", "timestamp", "source_label", "likes", "pinned_tweet"],
+            },
+            //!YOUTUBE ATTACK SURFACE
+            {
+                key: "youtube",
+                name: "Youtube",
+                surface: ["community", "profile_pic", "banner", "verified", "channel_name", "subscribers", "videos","about"]
+            },
+            //!TUMBLR ATTACK SURFACE
+            {
+                key: "tumblr",
+                name: "Tumblr",
+                surface: ["profile_pic", "username", "mutuals", "posts", "followers", "following", "images", "archive", "biography"]
+            },
 
-            }
 
         ]
 
@@ -1682,13 +1711,15 @@ const useSurface = () => {
         ]
 
     return {
+        getIdentityIcon,
         parseUrl,
         getIdentityProviders,
         getOtherVectors,
         getProviderSurfaceVectors,
         getRawResources,
-        getDefaultTargetState,
-        getVectorSurfaceMap
+        getDefaultOperationState,
+        getVectorSurfaceMap,
+        getDefaultTarget
     };
 };
 
