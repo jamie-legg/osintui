@@ -1,5 +1,5 @@
 import { Children, cloneElement, Fragment, useEffect, useRef, useState } from 'react'
-import { Dialog, Switch, Transition } from '@headlessui/react'
+import { Dialog, Listbox, Switch, Transition } from '@headlessui/react'
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
@@ -14,22 +14,27 @@ import {
   EyeIcon,
   EyeOffIcon,
   FireIcon,
+  FolderOpenIcon,
   HomeIcon,
   IdentificationIcon,
   MenuAlt2Icon,
+  PencilIcon,
   QuestionMarkCircleIcon,
   SelectorIcon,
   SwitchVerticalIcon,
   TerminalIcon,
   UploadIcon,
   UsersIcon,
+  LightningBoltIcon,
   XIcon,
 } from '@heroicons/react/outline'
-import { HeartIcon, SearchIcon, 
+import {
+  HeartIcon, SearchIcon,
   IdentificationIcon as SolidIdentificationIcon,
-BriefcaseIcon as SolidBriefcaseIcon,
-ClockIcon as SolidClockIcon, 
-PlusIcon} from '@heroicons/react/solid'
+  BriefcaseIcon as SolidBriefcaseIcon,
+  ClockIcon as SolidClockIcon,
+  PlusIcon
+} from '@heroicons/react/solid'
 import ThemeToggle from './ThemeToggle'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
@@ -75,9 +80,12 @@ const tabs = [
 
 
 export default function Layout({ children, footerRef, pageNo, onPageChange, onDataWipe }) {
-  
+
   const { getIdentityProviders, getIdentityIcon } = useSurface();
-  const { operationIndex, targetIndex, operations} = useOperation();
+  const { operationIndex, targetIndex, operations } = useOperation();
+  const { theme, setTheme } = useTheme();
+
+  const [ vectorIndex, setVectorIndex ] = useState(operations[operationIndex][targetIndex].vectors.length);
 
   const { setDefaultProvider, newTargetInOperation } = useOperationUpdate();
 
@@ -113,7 +121,7 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
     setOpBoxOpen(!opBoxOpen)
   }
 
-  
+
 
 
   useEffect(() => {
@@ -129,11 +137,11 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
 
   return (
     <div className="relative h-screen overflow-hidden flex">
-      
-      <MobileSidebar open={sidebarOpen} onPageChange={onPageChange} navigation={navigation} pageNo={pageNo} target={target}  />
+
+      <MobileSidebar open={sidebarOpen} onPageChange={onPageChange} navigation={navigation} pageNo={pageNo} target={target} />
 
       {/* Static sidebar for desktop */}
-      <DesktopSidebar onPageChange={onPageChange} navigation={navigation} pageNo={pageNo} target={target} />               
+      <DesktopSidebar onPageChange={onPageChange} navigation={navigation} pageNo={pageNo} target={target} />
 
       {/* Content area */}
       <div className="flex-1 flex flex-col dark:bg-gray-900">
@@ -147,15 +155,15 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
             <span className="sr-only">Open sidebar</span>
             <MenuAlt2Icon className="h-8 w-8" aria-hidden="true" />
           </button>
-          <span className="border-r-4 border-gray-900 pr-4">{pageNo === 0? "Identification Vectors" : pageNo === 1? "Research Resources" : "Historical Operations"}</span>
+          <span className="border-r-4 border-gray-900 pr-4">{pageNo === 0 ? "Identification Vectors" : pageNo === 1 ? "Research Resources" : "Historical Operations"}</span>
           <span className="hidden xl:block ">&nbsp;
             <span onClick={() => toggleSelectModal()} className="pl-4 mt-0.5 pr-3 code text-xl py-2 border-dashed border-4 dark:hover:border-gray-300 dark:border-gray-600 hover:border-gray-300 border-gray-100 rounded-xl cursor-pointer">
-            {target.defaultProviderKey.length > 0 ? 
-            <svg className={"inline-block h-6 w-6 pb-1 text-gray-900"} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <title>{target.defaultProviderKey}</title>
-            <path fill="currentColor" d={getIdentityIcon(target.defaultProviderKey)} />
-          </svg>: null}
-          {target.username ? target.username : "target_username"}</span>
+              {target.defaultProviderKey.length > 0 ?
+                <svg className={"inline-block h-6 w-6 pb-1 text-gray-900"} role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <title>{target.defaultProviderKey}</title>
+                  <path fill="currentColor" d={getIdentityIcon(target.defaultProviderKey)} />
+                </svg> : null}
+              {target.username ? target.username : "target_username"}</span>
           </span>
           <span className="items-center h-8 bg-gray-900 pt-0.5 code dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2">
             +{target.availableVectors.length}
@@ -163,41 +171,98 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
           <div className="relative ml-10 lg:hidden">
             <EyeIcon onClick={toggleSelectModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
-          <SelectBox open={opBoxOpen} onClick={toggleOpBox} />
-          <OpBox>
-            #OP:{operationIndex}_{targetIndex}
-            <PlusIcon onClick={addNewTarget} className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-            <SelectorIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-            <UploadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-            <DownloadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-          </OpBox>
+          <div>
+          <Listbox value={target} onChange={setTarget}>
+            <OpBox>
+              <span className="mr-2">#OP:{operationIndex}_{targetIndex}</span>
+              {theme === "dark" ? <img className="w-10 h-10" src="/osintuigray.png"></img> : <img className="w-10 h-10" src="/osintuiwhite.png"></img>}
+              <PlusIcon onClick={addNewTarget} className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+              <Listbox.Button>
+                <SelectorIcon onClick={() => setOpBoxOpen(!opBoxOpen)} className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+              </Listbox.Button>
+              <UploadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+              <DownloadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            </OpBox>
+            <Transition
+              show={opBoxOpen}
+              as={Fragment}
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                {operations.map((operation, index) => (
+                  <Listbox.Option
+                  key={index}
+                  className={({ active }) =>
+                    classNames(
+                    active?'text-white bg-indigo-600': 'text-gray-900',
+                    'cursor-default select-none relative py-2 pl-3 pr-9'
+                    )
+                  }
+                  value={operation}>
+                    {({ selected, active }) => (
+                      <>
+                        <div className="flex items-center">
+                          <img src={operation.profilePicUrl} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
+                          <span
+                            className={classNames(selected?'font-semibold': 'font-normal', 'ml-3 block truncate')}
+                          >
+                          {operation.name}
+                          </span>
+                        </div>
 
-        </div>
-        {/* Content area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-
-          {/* Main content */}
-          <div className="flex-1 flex items-stretch overflow-hidden">
-              
-            {children}
-
-            {/* Current target sidebar */}
-            <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 overflow-y-auto lg:block">
-              <CurrentTarget />
-            </aside>
-
+                        {selected?(
+                          <span
+                          className={classNames(
+                          active?'text-white': 'text-indigo-600',
+                          'absolute inset-y-0 right-0 flex items-center pr-4'
+                          )}>
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ): null}
+                      </>
+                  )}
+                </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Transition>
+          </Listbox>
           </div>
-        </div>
-        <footer className="flex items-center justify-center w-full h-16 border-t">
-          <TerminalIcon className="text-gray-500 inline-block h-8 w-8 ml-5" />
-          <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
-
-            <input ref={footerRef} className="w-full h-6 border-none bg-white dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
-
-
           </div>
-        </footer>
+          <div className="flex-1 flex flex-col overflow-hidden">
+
+            {/* Main content */}
+            <div className="flex-1 flex items-stretch overflow-hidden">
+
+              {children}
+
+              {/* Current target sidebar */}
+              <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 overflow-y-auto lg:block">
+                <CurrentTarget />
+              </aside>
+
+            </div>
+          </div>
+          <footer className="flex items-center justify-center w-full h-16 border-t">
+            <TerminalIcon className="text-gray-500 inline-block h-8 w-8 ml-5" />
+            <div className="w-full ml-5 h-6 dark:bg-gray-900 text-gray-500">
+
+              <input ref={footerRef} className="w-full h-6 border-none bg-white dark:bg-gray-900 text-gray-500" type="text" placeholder="Move fast. Use commands. !help for more." />
+
+
+            </div>
+            <OpBox>
+            <div className="code text-3xl">
+              #V:{vectorIndex}_{vectorIndex === 0? "ready" : target.vectors[vectorIndex]}
+            </div>
+            <LightningBoltIcon onClick={() => toggleNameEdit()} className="inline-block mt-1 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-1" />
+            <PencilIcon className="inline-block mt-1 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <FolderOpenIcon className="inline-block mt-1 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            </OpBox>
+
+          </footer>
+        </div>
       </div>
-    </div>
-  )
+      )
 }

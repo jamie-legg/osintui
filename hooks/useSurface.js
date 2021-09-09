@@ -125,10 +125,10 @@ const useSurface = () => {
     
     const vectorSurfaceMap = [
             {
-                key:"dwm",
+                key:"darkweb_market",
                 name:"DWM",
                 surface: [
-                    "market", "vendor"
+                    "market", "vendor", "onionUrl"
                 ],
             },
             {
@@ -146,7 +146,7 @@ const useSurface = () => {
                 ],
             },
             {
-                key: "onionUrl",
+                key: "onion_url",
                 name: "Onion URL",
                 surface: [],
             },
@@ -215,12 +215,12 @@ const useSurface = () => {
             {
                 key: "images",
                 name: "Photo(s)",
-                surface: ["metadata", "adjustedImage", "lens", "reverseSearch", "uploadTime", "stego", "hash", "captions", "manipulationDetection", "fileName", "exif", "photoContentAnalysis", "enhancements"],
+                surface: ["metadata", "adjusted_image", "lens", "reverse_search", "upload_time", "stego", "hash", "captions", "manipulationDetection", "fileName", "exif", "photoContentAnalysis", "enhancements"],
             },
             {
-                key: "adjustedImage",
+                key: "adjusted_image",
                 name: "Adjusted Image",
-                surface: ["lens, reverseSearch"],
+                surface: ["lens, reverse_search"],
             },
             {
                 key: "lens",
@@ -228,12 +228,12 @@ const useSurface = () => {
                 surface: [],
             },
             {
-                key: "reverseSearch",
+                key: "reverse_search",
                 name: "Reverse Image Search",
                 surface: [],
             },
             {
-                key: "uploadTime",
+                key: "upload_time",
                 name: "Upload Time",
                 surface: [],
             },
@@ -563,7 +563,12 @@ const useSurface = () => {
             {
                 key: "tiktok",
                 name: "TikTok",
-                surface: ["profile_pic", "username", "name", "verified", "likes", "followers", "following", "tiktok_vids", "biography", "posts"],
+                surface: ["tiktok_id", "profile_pic", "username", "name", "verified", "likes", "followers", "following", "tiktok_vids", "biography", "posts"],
+            },
+            {
+                key: "tiktok_id",
+                name: "TikToK",
+                surface: ["username"]
             },
             {
                 key:"tiktok_vids",

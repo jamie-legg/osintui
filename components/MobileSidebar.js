@@ -57,7 +57,7 @@ export default function MobileSidebar({open, navigation, secondaryNavigation, te
               <div className="flex-shrink-0 px-4 flex items-center">
 
                 {theme === "dark" ? <img className="w-24 h-24" src="/osintuiwhite.png"></img> : <img className="w-24 h-24" src="/osintuigray.png"></img>}
-                <p className="title text-4xl">OSINTUI<span className="header text-xs">BETA</span></p>
+                <p className="title text-4xl">OSINTUI<span className="header text-xs border-b-4 border-red-600">ALPHA</span></p>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="h-full flex flex-col">

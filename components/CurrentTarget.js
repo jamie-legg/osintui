@@ -115,12 +115,12 @@ export default function CurrentTarget({ onChange }) {
         <div className="mt-4 flex items-start justify-between">
           <div className>
             <div className="border-4 flex border-gray-900 p-2 text-3xl uppercase code">
-              <span className="inline-block ">#T{targetIndex}:</span>
-            <input ref={nameRef} disabled={!nameEdit} value={infoEnabled ? target.name : "##### ####"} className="inline-block w-36 title font-medium text-gray-900 dark:text-white">
+              <span className="inline-block ">#T:{targetIndex}_</span>
+            <input ref={nameRef} disabled={nameEdit} placeholder={infoEnabled ? target.name.split(" ")[0] : "##### ####"} className="border-gray-300 border-2 border-dashed placeholder-gray-900 inline-block w-28 code text-gray-900 dark:text-white">
 
             </input>
-            <TagIcon onClick={toggleNameEdit} className="inline-block mb-1.5 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-1" />
-            <BanIcon className="inline-block mb-1.5 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            <TagIcon onClick={() => toggleNameEdit()} className="inline-block mt-1 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-1" />
+            <BanIcon className="inline-block mt-1 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
             </div>
             {target.username ? <p className="cursor-pointer text-blue-600 hover:text-blue-800 text-sm font-medium code title">{infoEnabled ? "@" + target.username : "######"} | {target.defaultProviderKey} <LinkIcon className="inline-block h-3 w-3"></LinkIcon></p> :
             <span onClick={() => setSelectModalOpen(!selectModalOpen)} className="cursor-pointer inline-block h-8 mt-2 bg-gray-900 text-white code py-1 px-1">ADD A USERNAME</span>}
@@ -128,7 +128,7 @@ export default function CurrentTarget({ onChange }) {
         </div>
       </div>
       <div>
-        <h3 className={classNames(target.availableVectors.length > 0? "border-red-500":"border-white", "p-2 text-xl header text-gray-900 dark:text-white border-4")}>Surface Vectors <ArrowsExpandIcon onClick={() => setState(!state)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
+      
         <ModalDialog open={lowHangingDialogOpen} onClose={() => setState(!state)} />
         <div className="mt-2 border-t border-b">
           {target.availableVectors ? target.availableVectors.map((surface, i) => {

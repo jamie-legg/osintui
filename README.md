@@ -1,6 +1,6 @@
-# OSINTUI - BETA
+# OSINTUI - ALPHA
 
-Thanks for checking out the OSINTUI public beta. This tool's purpose is to replace your OSINT toolbox with a simple, clean, and intuitive UI to make your operation tracking much simpler.
+Thanks for checking out the OSINTUI public alpha. This tool's purpose is to replace your OSINT toolbox with a simple, clean, and intuitive UI to make your operation tracking much simpler.
 
 This is an air-gapped application (No network interfaces) in order to ensure maximum privacy for your operations. Download and upload data in order to move operations between browsers.
 

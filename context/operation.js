@@ -128,6 +128,9 @@ export function OperationWrapper({ children }) {
             });
         }
     });
+    //? FOR IDENTITY VECTORS, ONLY ADD INDEX 0 - ID IS
+    const vector = currentTarget.vectors.find(v => v.key === surface[0])
+    vector? vector.data.push(identity) : currentTarget.vectors.push({ key: surface[0], data: [identity] });
     globalOps.operations[globalOps.operationIndex][globalOps.targetIndex] = currentTarget;
     setGlobalOps({...globalOps});
     return currentTarget;

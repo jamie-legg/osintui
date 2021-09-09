@@ -14,8 +14,8 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
         <nav className="bg-white dark:bg-gray-900 border-r-4 border-gray-900 dark:border-gray-700 pt-5 pb-4 flex flex-col flex-grow overflow-y-auto">
           <div className="flex-shrink-0 px-4 flex items-center">
             {theme === "dark" ? <img className="w-16 h-16" src="/osintuigray.png"></img> : <img className="w-16 h-16" src="/osintuiwhite.png"></img>}
-            <p className="title text-5xl px-2">
-              OSINTUI<span className="text-sm">beta</span>
+            <p className="title text-5xl px-2 pb-0 border-l-4 border-blue-600">
+              OSINTUI<span className="text-sm mb-4 border-b-4 border-red-600">alpha</span>
             </p>
           </div>
           <div className="flex-grow mt-5 flex flex-col">
