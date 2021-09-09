@@ -1,5 +1,5 @@
 import { Switch } from "@headlessui/react"
-import { BanIcon, DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon, ReplyIcon, SaveAsIcon } from "@heroicons/react/outline"
+import { BanIcon, DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon, ReplyIcon, SaveAsIcon, TagIcon } from "@heroicons/react/outline"
 import { useEffect, useRef, useState } from "react"
 import useSurface from "../hooks/useSurface"
 import { ArrowsExpandIcon, DocumentRemoveIcon, PlusSmIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
@@ -14,14 +14,11 @@ export default function CurrentTarget({ onChange }) {
 
   
   const [isOpen, setIsOpen] = useState(false)
+  const [nameEdit, toggleNameEdit] = useState(false)
   const { getIdentityProviders, getVectorSurfaceMap } = useSurface();
   const { operations, operationIndex, targetIndex } = useOperation();
-  const { addIdentityToTarget, removeIdentityFromTarget } = useOperationUpdate();
-
-  const [target, setTarget] = useState(operations[operationIndex][targetIndex]);
-
-  const imageRef = useRef();
-
+  const { addIdentityToTarget, removeIdentityFromTarget, addImageToTarget } = useOperationUpdate();
+  const [imageUri, setImageUri] = useState(null);
   const [lowHangingDialogOpen, setLowHangingDialogOpen] = useState(false)
   const [photoEnabled, setPhotoEnabled] = useState(true)
   const [inOps, setInOps] = useState(false)
@@ -31,6 +28,30 @@ export default function CurrentTarget({ onChange }) {
   const toggleSelectModal = () => setSelectModalOpen(!selectModalOpen)
 
   const vectorMap = getVectorSurfaceMap()
+
+  const [target, setTarget] = useState(operations[operationIndex][targetIndex]);
+
+  const imageRef = useRef(null);
+  const nameRef = useRef(null);
+
+  const imageChange = (e) => {
+    console.log("wtf");
+    console.log(e);
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImageUri(e.target.result);
+        addImageToTarget(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  const handleFocus = () => {
+    imageRef.current.focus();
+  }
+
   
 
   return (
@@ -78,9 +99,9 @@ export default function CurrentTarget({ onChange }) {
           </Switch.Label>
         </Switch.Group>
         <div className="block w-full aspect-w-10 aspect-h-10 rounded-lg object-cover overflow-hidden">
-          {target.profilePicUrl ? <img src={photoEnabled ? target.profilePicUrl : "/static.jpeg"} alt="" className="object-cover" /> :
+          {imageUri ? <img src={photoEnabled ? imageUri : "/static.jpeg"} alt="" className="object-cover" /> :
             <>
-            <button type="button" onClick={() => imageRef.current.focus()} className="block group w-full border-4 border-gray-200 border-dashed rounded-lg p-12 text-center hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2">
+            <button type="button" onClick={handleFocus} className="block group w-full border-4 border-gray-200 border-dashed rounded-lg p-12 text-center hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2">
               
               <PhotographIcon className="inline w-7 h-7 text-gray-400 group-hover:text-gray-500"></PhotographIcon>
               <PlusSmIcon className="inline w-7 h-7 text-gray-400 group-hover:text-gray-500"></PlusSmIcon>
@@ -88,41 +109,22 @@ export default function CurrentTarget({ onChange }) {
                 Add a new image
               </label>
             </button>
-            <input ref={imageRef} id="file-upload" name="file-upload" type="file" className="w-full h-full z-40 sr-only border-none absolute block pin-r pin-t"></input>
+            <input ref={imageRef} onChange={imageChange} id="file-upload" name="file-upload" type="file" className="z-40 opacity-0 cursor-pointer border-none absolute block pin-r pin-t"></input>
             </>}
         </div>
         <div className="mt-4 flex items-start justify-between">
-          <div>
-            <h2 className="text-3xl uppercase title font-medium text-gray-900 dark:text-white">
-              <span className="sr-only">Details for </span>
-              {infoEnabled ? target.name : "##### ####"}
-            </h2>
+          <div className>
+            <div className="border-4 flex border-gray-900 p-2 text-3xl uppercase code">
+              <span className="inline-block ">#T{targetIndex}:</span>
+            <input ref={nameRef} disabled={!nameEdit} value={infoEnabled ? target.name : "##### ####"} className="inline-block w-36 title font-medium text-gray-900 dark:text-white">
+
+            </input>
+            <TagIcon onClick={toggleNameEdit} className="inline-block mb-1.5 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-1" />
+            <BanIcon className="inline-block mb-1.5 h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
+            </div>
             {target.username ? <p className="cursor-pointer text-blue-600 hover:text-blue-800 text-sm font-medium code title">{infoEnabled ? "@" + target.username : "######"} | {target.defaultProviderKey} <LinkIcon className="inline-block h-3 w-3"></LinkIcon></p> :
-            <span onClick={() => setSelectModalOpen(!selectModalOpen)} className="cursor-pointer inline-block h-8 bg-gray-900 text-white code py-1 px-1">ADD A USERNAME</span>}
+            <span onClick={() => setSelectModalOpen(!selectModalOpen)} className="cursor-pointer inline-block h-8 mt-2 bg-gray-900 text-white code py-1 px-1">ADD A USERNAME</span>}
           </div>
-          {inOps ?
-            <button
-              type="button"
-              onClick={() => setInOps(false)}
-              className={"ml-4 group bg-white rounded-full h-8 w-8 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2"}
-            >
-              <div className="mt-10 hidden group-hover:inline-block bg-gray-900 text-white dark:bg-white dark:text-gray-900 p-1.5">Delete Target</div>
-              <DocumentRemoveIcon className="h-6 w-6" aria-hidden="true" />
-
-              <span className="sr-only">Favorite</span>
-            </button>
-            :
-            <button
-              type="button"
-              onClick={() => setInOps(true)}
-              className={"ml-4 group bg-white rounded-full h-8 w-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2"}
-            >
-              <div className="mt-10 hidden group-hover:inline-block bg-gray-900 text-white dark:bg-white dark:text-gray-900 p-1.5">New Target</div>
-              <DocumentAddIcon className="h-6 w-6" aria-hidden="true" />
-
-              <span className="sr-only">Favorite</span>
-            </button>
-          }
         </div>
       </div>
       <div>

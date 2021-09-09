@@ -16,7 +16,6 @@ export function OperationWrapper({ children }) {
   const currentTarget = globalOps.operations[globalOps.operationIndex][globalOps.targetIndex];
 
   useEffect(() => {
-    console.log("no param operation context effect");
     const stored_key = localStorage.getItem('private_key');
     if (stored_key) {
       setGlobalOps(globalOps => ({ ...globalOps, key:stored_key}));
@@ -69,6 +68,26 @@ export function OperationWrapper({ children }) {
         newOps.operations = JSON.parse(decipherText(newOps.operations));
         setGlobalOps({...newOps});
       }
+    },
+    addImageToTarget: (image) => {
+      const newOps = { ...globalOps };
+      let newTarget = newOps.operations[globalOps.operationIndex][globalOps.targetIndex]
+      newTarget.profilePicUrl = image;
+      const vectorImages = newTarget.vectors.find(v => v.key === "images")
+      vectorImages? vectorImages.data.push(image) : newTarget.vectors.push({ key: "images", data: [image] });
+      const { surface } = vectorMap.find(s => s.key === "images");
+      surface.forEach(s => {
+        const targetSurface = newTarget.availableVectors.find(as => as.key === s);
+        if (targetSurface) {
+            targetSurface.priority += 1;
+        } else {
+          newTarget.availableVectors.push({
+                key: s,
+                priority: 1
+            });
+        }
+      });
+      setGlobalOps({...newOps});
     },
     newTargetInOperation: () => {
       const newTarget = getDefaultTarget();

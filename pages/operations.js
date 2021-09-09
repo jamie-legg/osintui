@@ -51,8 +51,10 @@ export default function Operations() {
             <Button text="View Keys" onClick={viewKeysToggle} icon={ShieldCheckIcon}/>
         </div>
         <div className="grid grid-cols-2">
-            <div className="col-span-1">
-                {operations.map((operation, index) => {
+            <div className="col-span-1 overflow-y-auto">
+                {encryptedOps ? 
+                <p></p>
+                : operations.map((operation, index) => {
                         return <div key={index} className="flex flex-col justify-center items-center">
                             <div className="text-gray-500 text-center">
                                 <span className="text-lg">{operation.name}</span>
@@ -66,11 +68,11 @@ export default function Operations() {
                 )}
             </div>
             <pre className="col-span-1 code text-sm">
-                {
+                
 
                 
-                JSON.stringify(operations, null, 2)
-}
+        {encryptedOps ? [...JSON.stringify(operations)].map((s,i) => i%16==0 ? s+"\n" : i%8==0? s+" ": s) : JSON.stringify(operations, null, 2)}
+
 
             </pre>
             </div>

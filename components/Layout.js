@@ -42,6 +42,7 @@ import DesktopSidebar from './DesktopSidebar'
 import MobileSidebar from './MobileSidebar'
 import InfoModal from './InfoModal'
 import OpBox from './OpBox'
+import SelectBox from './SelectBox'
 
 const navigation = {
   primary: [
@@ -82,7 +83,7 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
 
   const [target, setTarget] = useState(operations[operationIndex][targetIndex])
 
-  console.log("default layout", target);
+  const [opBoxOpen, setOpBoxOpen] = useState(false)
 
   const changeDefaultIdentity = (id) => {
     setTarget(setDefaultProvider(id))
@@ -98,7 +99,6 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [selectModalOpen, setSelectModalOpen] = useState(false);
-  const [targetModalOpen, setTargetModalOpen] = useState(false);
   const providers = getIdentityProviders();
 
   const removeData = () => {
@@ -107,6 +107,10 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
 
   const toggleSelectModal = () => {
     setSelectModalOpen(!selectModalOpen)
+  }
+
+  const toggleOpBox = () => {
+    setOpBoxOpen(!opBoxOpen)
   }
 
   
@@ -159,7 +163,7 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
           <div className="relative ml-10 lg:hidden">
             <EyeIcon onClick={toggleSelectModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
-
+          <SelectBox open={opBoxOpen} onClick={toggleOpBox} />
           <OpBox>
             #OP:{operationIndex}_{targetIndex}
             <PlusIcon onClick={addNewTarget} className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
