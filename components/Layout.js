@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Children, cloneElement, Fragment, useEffect, useRef, useState } from 'react'
 import { Dialog, Switch, Transition } from '@headlessui/react'
 import {
   ArrowNarrowLeftIcon,
@@ -41,6 +41,7 @@ import SelectModal from './SelectModal'
 import DesktopSidebar from './DesktopSidebar'
 import MobileSidebar from './MobileSidebar'
 import InfoModal from './InfoModal'
+import OpBox from './OpBox'
 
 const navigation = {
   primary: [
@@ -76,8 +77,13 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
   
   const { getIdentityProviders, getIdentityIcon } = useSurface();
   const { operationIndex, targetIndex, operations} = useOperation();
+
   const { setDefaultProvider, newTargetInOperation } = useOperationUpdate();
+
   const [target, setTarget] = useState(operations[operationIndex][targetIndex])
+
+  console.log("default layout", target);
+
   const changeDefaultIdentity = (id) => {
     setTarget(setDefaultProvider(id))
   }
@@ -115,8 +121,11 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
     setNav(navigation)
   })
 
+  console.log("target", target);
+
   return (
     <div className="relative h-screen overflow-hidden flex">
+      
       <MobileSidebar open={sidebarOpen} onPageChange={onPageChange} navigation={navigation} pageNo={pageNo} target={target}  />
 
       {/* Static sidebar for desktop */}
@@ -124,7 +133,6 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
 
       {/* Content area */}
       <div className="flex-1 flex flex-col dark:bg-gray-900">
-        <InfoModal isOpen={infoOpen} />
         <SelectModal providers={providers} target={target} open={selectModalOpen} onClose={toggleSelectModal} onChange={changeDefaultIdentity}></SelectModal>
         <div className="w-full flex items-center text-3xl py-5 title ml-5 uppercase">
           <button
@@ -152,13 +160,13 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
             <EyeIcon onClick={toggleSelectModal} className="right-0 h-8 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" aria-hidden="true" />
           </div>
 
-          <div className="border-4 border-gray-900 p-2 hidden lg:flex absolute right-10 place-self-end items-end text-3xl code uppercase">
-            #OP-C:{operationIndex}_{targetIndex}
+          <OpBox>
+            #OP:{operationIndex}_{targetIndex}
             <PlusIcon onClick={addNewTarget} className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
             <SelectorIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
             <UploadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
             <DownloadIcon className="h-8 cursor-pointer hover:bg-gray-700 rounded-md bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xl px-2 ml-2" />
-          </div>
+          </OpBox>
 
         </div>
         {/* Content area */}
@@ -166,11 +174,12 @@ export default function Layout({ children, footerRef, pageNo, onPageChange, onDa
 
           {/* Main content */}
           <div className="flex-1 flex items-stretch overflow-hidden">
-
+              
             {children}
+
             {/* Current target sidebar */}
             <aside className="hidden w-96 bg-white dark:bg-gray-900 p-8 overflow-y-auto lg:block">
-              <CurrentTarget parentTarget={target} />
+              <CurrentTarget />
             </aside>
 
           </div>

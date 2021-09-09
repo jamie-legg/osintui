@@ -2,6 +2,20 @@ import { AtSymbolIcon, DotsCircleHorizontalIcon, GlobeAltIcon, InboxIcon, InboxI
 
 const useSurface = () => {
 
+    const API_URL = process.env.NODE_ENV === "production" ? "https://osint.ui/api/" : "http://localhost:3000/api/";
+
+    const getPrivateKey = () => {
+        //fetches private key from localhost api
+        return fetch(API_URL+"crypto")
+            .then(res => res.json())
+            .then(data => {
+                return data.privateKey;
+            })
+            .catch(err => {
+                //TODO! handle errors
+            });
+    };
+
 
     const getIdentityProviders = () => {
         return [
@@ -37,23 +51,11 @@ const useSurface = () => {
     const getDefaultTarget = () => {
         const defaultTarget = {
             id: 0,
-            name: '',
-            username: '',
+            name: getRandomName(),
+            username: "",
             profilePicUrl: "",
-            identities: [
-                {
-                    platform: "",
-                    username: "",
-                    active: false,
-                    default: false
-                },
-            ],
-            vectors: [
-                {
-                    key: "",
-                    data: []
-                }
-            ],
+            identities: [],
+            vectors: [],
             defaultProviderKey: "",
             availableVectors: []
         }
@@ -70,6 +72,7 @@ const useSurface = () => {
             operationIndex: 0,
             targetIndex: 0,
             encrypted: false,
+            key: "",
             operations: [
                 [getDefaultTarget()]
             ]
@@ -98,6 +101,22 @@ const useSurface = () => {
     const getVectorSurfaceMap = () => {
         return vectorSurfaceMap
     }
+
+    const getRandomName = () => {
+        const randomNames = [
+          "John Doe",
+          "Jamie Legg",
+          "Jane Doe",
+          "John Smith",
+          "Jane Smith",
+          "Jamie Smith",
+          "John Legg",
+          "Jane Legg",
+        ]
+        return randomNames[Math.floor(Math.random() * randomNames.length)]
+      }
+    
+
 
     //! ITS ALL DATA FROM HERE ON OUT
 
@@ -525,6 +544,11 @@ const useSurface = () => {
                 surface: ["domain"],
             },
             {
+                key: "likes",
+                name: "Likes",
+                surface: [],
+            },
+            {
                 key: "posts",
                 name: "Posts",
                 surface: ["tags", "images", "content", "video", "link", "location"],
@@ -542,7 +566,7 @@ const useSurface = () => {
                 surface: ["profile_pic", "username", "name", "verified", "likes", "followers", "following", "tiktok_vids", "biography", "posts"],
             },
             {
-                key:"tiktokVideos",
+                key:"tiktok_vids",
                 name: "TikTok Videos",
                 surface: ["tags", "likes", "music", "comments", "title"],
             },
@@ -1719,7 +1743,8 @@ const useSurface = () => {
         getRawResources,
         getDefaultOperationState,
         getVectorSurfaceMap,
-        getDefaultTarget
+        getDefaultTarget,
+        getPrivateKey
     };
 };
 

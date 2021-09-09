@@ -1,23 +1,24 @@
 import { Switch } from "@headlessui/react"
-import { DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon } from "@heroicons/react/outline"
+import { BanIcon, DocumentAddIcon, HeartIcon, InformationCircleIcon, LinkIcon, PencilAltIcon, PhotographIcon, PlusCircleIcon, RefreshIcon, ReplyIcon, SaveAsIcon } from "@heroicons/react/outline"
 import { useEffect, useRef, useState } from "react"
 import useSurface from "../hooks/useSurface"
 import { ArrowsExpandIcon, DocumentRemoveIcon, PlusSmIcon, QuestionMarkCircleIcon } from '@heroicons/react/solid'
 import { classNames } from "../shared/utils"
 import ModalDialog from "./ModalDialog"
-import { useOperation } from '../context/operation'
+import { useOperation, useOperationUpdate } from '../context/operation'
 import SelectModal from "./SelectModal"
+import OpBox from "./OpBox"
+import XButton from "./XButton"
 
-export default function CurrentTarget({ onChange, parentTarget }) {
+export default function CurrentTarget({ onChange }) {
 
   
   const [isOpen, setIsOpen] = useState(false)
-  const { getIdentityProviders } = useSurface();
-  const [target, setTarget] = useState(parentTarget)
+  const { getIdentityProviders, getVectorSurfaceMap } = useSurface();
+  const { operations, operationIndex, targetIndex } = useOperation();
+  const { addIdentityToTarget, removeIdentityFromTarget } = useOperationUpdate();
 
-  useEffect(() => {
-    setTarget(parentTarget)
-  }, [parentTarget])
+  const [target, setTarget] = useState(operations[operationIndex][targetIndex]);
 
   const imageRef = useRef();
 
@@ -29,22 +30,8 @@ export default function CurrentTarget({ onChange, parentTarget }) {
   const [selectModalOpen, setSelectModalOpen] = useState(false)
   const toggleSelectModal = () => setSelectModalOpen(!selectModalOpen)
 
-  const getRandomName = () => {
-    const randomNames = [
-      "John Doe",
-      "Jamie Legg",
-      "Jane Doe",
-      "John Smith",
-      "Jane Smith",
-      "Jamie Smith",
-      "John Legg",
-      "Jane Legg",
-    ]
-    return randomNames[Math.floor(Math.random() * randomNames.length)]
-  }
-
-
-  const randomName = getRandomName()
+  const vectorMap = getVectorSurfaceMap()
+  
 
   return (
     <div className="pb-16 space-y-6">
@@ -108,9 +95,9 @@ export default function CurrentTarget({ onChange, parentTarget }) {
           <div>
             <h2 className="text-3xl uppercase title font-medium text-gray-900 dark:text-white">
               <span className="sr-only">Details for </span>
-              {infoEnabled ? target.name ? target.name : randomName : "##### ####"}
+              {infoEnabled ? target.name : "##### ####"}
             </h2>
-            {target.username ? <p className="text-sm font-medium code text-gray-500 title">{infoEnabled ? target.username : "######"} | <LinkIcon className="inline-block h-3 w-3 text-gray-500"></LinkIcon></p> :
+            {target.username ? <p className="cursor-pointer text-blue-600 hover:text-blue-800 text-sm font-medium code title">{infoEnabled ? "@" + target.username : "######"} | {target.defaultProviderKey} <LinkIcon className="inline-block h-3 w-3"></LinkIcon></p> :
             <span onClick={() => setSelectModalOpen(!selectModalOpen)} className="cursor-pointer inline-block h-8 bg-gray-900 text-white code py-1 px-1">ADD A USERNAME</span>}
           </div>
           {inOps ?
@@ -139,30 +126,17 @@ export default function CurrentTarget({ onChange, parentTarget }) {
         </div>
       </div>
       <div>
-        <h3 className="text-xl header text-gray-900 dark:text-white">Available Vectors <ArrowsExpandIcon onClick={() => setState(!state)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
+        <h3 className={classNames(target.availableVectors.length > 0? "border-red-500":"border-white", "p-2 text-xl header text-gray-900 dark:text-white border-4")}>Surface Vectors <ArrowsExpandIcon onClick={() => setState(!state)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
         <ModalDialog open={lowHangingDialogOpen} onClose={() => setState(!state)} />
-        <dl className="mt-2 border-t border-b border-gray-200">
+        <div className="mt-2 border-t border-b">
           {target.availableVectors ? target.availableVectors.map((surface, i) => {
             return (
-              <div key={surface.key} className="cursor-pointer group p-1.5 m-1 code inline-block bg-gray-900 text-white text-sm font-medium">
-                <dt className="">{infoEnabled ? surface.key : "####" + (Math.floor(Math.random() * 2) == 1 ? "##" : "#")} <span className="p-1 px-2 first-line:w-3 h-3 rounded-full bg-white text-red-600 group-hover:text-red-800">{surface.priority}</span></dt>
-
-              </div>
-            )
-          }) : null}
-        </dl>
+              <>
+              <XButton onClick={() => alert(surface.key)} text={(vectorMap.find((v) => v.key === surface.key).name)} />
+              </>
+          )}):null}
+        </div>
       </div>
-      <h3 className="text-xl header dark:text-white text-gray-900">Documented Vectors <RefreshIcon onClick={() => setLowHangingDialogOpen(!lowHangingDialogOpen)} className="cursor-pointer inline-block w-6 h-6 text-gray-400 hover:bg-gray-100 hover:text-gray-500" /></h3>
-      <dl className="mt-2 border-t border-b border-gray-200">
-        {target.documentedVectors ? target.documentedVectors.map((surface, i) => {
-          return (
-            <div key={surface.key} className="cursor-pointer group uppercase p-1.5 m-1 title inline-block bg-gray-900 text-white dark:text-gray-900 dark:bg-white text-sm font-medium">
-              <dt className="">{infoEnabled ? surface.key : "####" + (Math.floor(Math.random() * 2) == 1 ? "##" : "#")} <span className="p-1 px-2 first-line:w-3 h-3 rounded-full bg-white text-red-600 group-hover:text-red-800">{surface.priority}</span></dt>
-
-            </div>
-          )
-        }) : null}
-      </dl>
 
     </div>
   )

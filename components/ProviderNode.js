@@ -6,30 +6,26 @@ import { useOperation } from "../context/operation";
 import useSurface from "../hooks/useSurface";
 import { classNames } from "../shared/utils";
 
-export default function ProviderNode({ handler, provider, implicit=false, icon = null, index }) {
+export default function ProviderNode({ handler, defaultProvider, provider, implicit=false, icon = null, index }) {
   const {operations, operationIndex, targetIndex} = useOperation();
   const [target, setTarget] = useState(operations[operationIndex][targetIndex]);
+  const [isDefault, setDefault] = useState(defaultProvider);
+  
 
   const [isClicked, setIsClicked] = useState(!implicit && target.identities[index] && target.identities[index].username);
-  const [isActive, setIsActive] = useState(!implicit && target.identities[index] && target.identities[index].active);
-  const [isDefault, setIsDefault] = useState(!implicit && target.identities[index] && target.identities[index].default);
-  
-  useEffect(() => {
-    if(!implicit && target.identities[index] && target.identities[index].default) {
-      setIsDefault(true);
-    }
-  }, [isClicked]);
+
 
   const { getProviderSurfaceVectors } = useSurface();
+
+  useEffect(() => {
+    setDefault(defaultProvider);
+  }, [defaultProvider]);
   
   
   
   const registerProviderInformation = async event => {
     //? we always want the opposite action of current click state
     handler(provider, !isClicked);
-
-    setIsClicked(true);
-    
     
     setIsClicked(!isClicked)
   }
@@ -47,11 +43,27 @@ export default function ProviderNode({ handler, provider, implicit=false, icon =
               <path fill="currentColor" d={provider.iconPath} />
             </svg>
           }
-      </div>
+      </div>  
       <div className="row col-span-2">
-        <div className={classNames( isClicked? "hover:bg-gray-900 z-40 hover:text-white" : "", "text-xl title font-medium text-gray-900 dark:text-white text-right")}>{provider.name}{isClicked ? <ExternalLinkIcon className="inline-block w-5 h-5 ml-1" /> : null}</div>
-        {isClicked? <div className="text-gray-600 text-right code text-sm">{target.identities[index] && target.identities[index].username ? "@" + target.identities[index].username : "<Configuring>"}</div>
-        : <div className="text-sm code font-medium text-gray-600 dark:text-white text-right">{icon? provider.placeholder : "@username"}</div>}
+        <div className={classNames( isClicked? "hover:bg-gray-900 z-40 hover:text-white" : "", "text-xl title font-medium text-gray-900 dark:text-white text-right")}>
+          {provider.name}
+          {isClicked ? 
+            <ExternalLinkIcon className="inline-block w-5 h-5 ml-1" /> 
+          : null
+          }
+        </div>
+        {isClicked ? 
+          <div className="text-gray-600 text-right code text-sm">
+            {
+              target.identities[index] && target.identities[index].username ? 
+              "@" + target.identities[index].username : "<Configuring>"
+            }
+          </div>
+        :
+          <div className="text-sm code font-medium text-gray-600 dark:text-white text-right">
+            {icon? provider.placeholder : "@username"}
+          </div>
+        }
       </div>
       <div className="row col-span-3">
       {isClicked && isDefault? <div className="uppercase code text-xs mx-auto w-14 bg-red-600 text-white text-center">Default</div> : null}
@@ -83,8 +95,8 @@ export default function ProviderNode({ handler, provider, implicit=false, icon =
           onChange={registerProviderInformation}
             checked={isClicked}
             className={classNames(
-              isClicked ? 'bg-gray-900 dark:bg-white border-gray-900 border-solid' : 'bg-white dark:bg-gray-900',
-              'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-gray-200 border-dashed rounded-none cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ring-gray-900 dark:ring-white'
+              isClicked ? 'bg-gray-900 dark:bg-white border-gray-900 border-solid' : 'bg-white border-dashed dark:bg-gray-900',
+              'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-gray-200 rounded-none cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ring-gray-900 dark:ring-white'
             )}
           >
             <span

@@ -1,3 +1,4 @@
+import { AES, enc } from 'crypto-js';
 import { createContext, useContext, useEffect, useState } from 'react';
 import useStorage from '../hooks/useStorage';
 import useSurface from '../hooks/useSurface';
@@ -7,19 +8,45 @@ const OperationUpdateContext = createContext();
 
 export function OperationWrapper({ children }) {
   const { getItem } = useStorage();
-  const { getDefaultOperationState, getDefaultTarget, getVectorSurfaceMap, getIdentityProviders } = useSurface();
+  const { getDefaultOperationState, getDefaultTarget, getVectorSurfaceMap, getIdentityProviders, getPrivateKey } = useSurface();
   const vectorMap = getVectorSurfaceMap();
   const providers = getIdentityProviders();
   const [ globalOps, setGlobalOps ] = useState(getDefaultOperationState());
-  const [ currentTarget, currentTargetState ] = useState(globalOps.operations[globalOps.operationIndex][globalOps.targetIndex]);
+
+  const currentTarget = globalOps.operations[globalOps.operationIndex][globalOps.targetIndex];
 
   useEffect(() => {
-    console.log("checking for stored ops");
+    console.log("no param operation context effect");
+    const stored_key = localStorage.getItem('private_key');
+    if (stored_key) {
+      setGlobalOps(globalOps => ({ ...globalOps, key:stored_key}));
+    }
+    else {
+      getPrivateKey().then(key => {
+        setGlobalOps(globalOps => ({ ...globalOps, key}));
+        localStorage.setItem('private_key', key);
+      });
+    }
+      
     const stored_ops = getItem('operations');
     if (stored_ops) {
       setGlobalOps(stored_ops);
     }
+    else {
+      
+    }
   }, []);
+
+  const cipherText = (text) => { 
+    const encrypted = AES.encrypt(text, globalOps.key).toString();
+    return encrypted;
+  }
+
+  const decipherText = (encrypted) => {
+    const bytes = AES.decrypt(encrypted, globalOps.key);
+    const decrypted = bytes.toString(enc.Utf8);
+    return decrypted;
+  }
 
   const getNextTargetId = () => {
     let high_id = 0;
@@ -30,23 +57,37 @@ export function OperationWrapper({ children }) {
   }
 
   const updateFns = {
+
+    toggleCryptography: (encrypt) => {
+      if(encrypt) {
+      const newOps = { ...globalOps, encrypted:true };
+      newOps.operations = cipherText(JSON.stringify(newOps.operations));
+      setGlobalOps({...newOps});
+      }
+      else {
+        const newOps = { ...globalOps, encrypted:false };
+        newOps.operations = JSON.parse(decipherText(newOps.operations));
+        setGlobalOps({...newOps});
+      }
+    },
     newTargetInOperation: () => {
       const newTarget = getDefaultTarget();
       newTarget.id = getNextTargetId();
       globalOps.operations[globalOps.operationIndex].push(newTarget);
-      setGlobalOps({ ...globalOps, targetIndex: globalOps.targetIndex+1 });
+      globalOps.targetIndex += 1;
+      setGlobalOps({...globalOps});
       return newTarget;
     },
     newOperation: () => {
       globalOps.operations.push([getDefaultTarget()]);
-      setGlobalOps({ ...globalOps, operationIndex: operationIndex+1 });
+      setGlobalOps({...globalOps});
     },
 
     addIdentityToTarget: (identity, provider ) => {
       const { surface } = vectorMap.find(s => s.key === provider);
       // get index of provider from identity providers
       const providerIndex = providers.findIndex(p => p.surfaceKey === provider);
-      const shouldBeDefault = !(currentTarget.identities.find(i => i.default === true));
+      const shouldBeDefault = !(currentTarget.identities.find(i => i && i.default === true));
       if(shouldBeDefault) {
         currentTarget.defaultProviderKey = provider;
         currentTarget.username = identity;
@@ -69,11 +110,11 @@ export function OperationWrapper({ children }) {
         }
     });
     globalOps.operations[globalOps.operationIndex][globalOps.targetIndex] = currentTarget;
-    setGlobalOps(globalOps);
+    setGlobalOps({...globalOps});
     return currentTarget;
     },
     removeIdentityFromTarget: (provider) => {
-      const identity = currentTarget.identities.find(i => i.platform === provider.surfaceKey);
+      const identity = currentTarget.identities.find(i => i && i.platform === provider.surfaceKey);
       const { surface } = vectorMap.find(s => s.key === provider.surfaceKey);
       currentTarget.identities.splice(currentTarget.identities.indexOf(identity), 1);
       surface.forEach(s => {
@@ -86,16 +127,15 @@ export function OperationWrapper({ children }) {
           }
       });
       globalOps.operations[globalOps.operationIndex][globalOps.targetIndex] = currentTarget;
-      setGlobalOps(globalOps);
+      setGlobalOps({...globalOps});
       return currentTarget;
     },
     setDefaultProvider: (providerKey) => {
-      const target = operationState[globalOps.index];
-      target.identities.forEach(i => i.default = false);
+      currentTarget.identities.forEach(i => i.default = false);
       const identity = target.identities.find(i => i.platform === providerKey);
       if(identity) identity.default = true;
-      setOperationState([...operationState]);
-      return target;
+      setGlobalOps({...globalOps});
+      return identity;
     },
     
   };

@@ -29,7 +29,7 @@ export default function DesktopSidebar({ onPageChange, navigation, secondaryNavi
                     }}
                     className={classNames(
                       item.current
-                        ? 'bg-gray-100 dark:bg-white dark:text-gray-900 border-gray-800 dark:border-gray-50 text-gray-800'
+                        ? 'bg-gray-100 dark:bg-white dark:text-gray-900 border-gray-900 dark:border-gray-50 text-gray-900'
                         : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50',
                       'title group border-l-4 py-2 px-3 flex items-center text-xl font-medium uppercase dark:text-gray-300 dark:hover:text-gray-900'
                     )}
